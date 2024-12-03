@@ -444,7 +444,7 @@ public class Node implements Runnable{
 			Checker c = new Checker();
 			(new Thread (c)).start();
 			//Communication is made with the initial node
-			String temp_data = "Initial New Node "+Integer.toString(port) +" "+ip+" "+index;
+			String temp_data = "Initial:New:Node "+Integer.toString(port) +" "+ip+" "+index;
 			byte[] data = temp_data.getBytes();
 			DatagramPacket packet = new DatagramPacket(data, data.length,initial_IP,initial_port);
 			socket_s.send(packet);
@@ -557,15 +557,15 @@ public class Node implements Runnable{
 					updates[n] = m;
 					n+=1;
 					ups = true;
-				} else if (m[0].equals("New Node")){
+				} else if (m[0].equals("New:Node")){
 					nodes[k] = m;
 					n+=1;
 					noes = true;
-				} else if (m[0].equals("Initial Fail")){
+				} else if (m[0].equals("Initial:Fail")){
 					/***ADD LATER***/
-				}  else if (m[0].equals("Initial New Node")){
+				}  else if (m[0].equals("Initial:New:Node")){
 					(new Thread (new NodeManager(m[1].trim(),m[2].trim()))).start();
-				} else if (m[0].equals("New Account")){
+				} else if (m[0].equals("New:Account")){
 					/***ADD LATER***/
 				}
 				} catch (Exception e) {
@@ -747,6 +747,7 @@ public class Node implements Runnable{
 				System.out.println(new String(receive));
 				String n = receive.toString();
 				String[] node = n.split(" ");
+				System.out.println(node[0]);
 				index = Integer.parseInt(node[4].trim());
 				port_list[index] = Integer.parseInt(node[1].trim());
 				try {IP_list[index] = InetAddress.getByName(node[2].trim());
@@ -759,7 +760,7 @@ public class Node implements Runnable{
 				e.printStackTrace();
 			}
 	}
-	
+
 		public boolean getFinished(){
 		return finished;	
 	}
@@ -953,7 +954,7 @@ public class Node implements Runnable{
 			System.out.println("10. NEW NODE COMMIT");
 
 			//Send new information to the new node
-			String temp_data = "Initial New Node "+Integer.toString(ne_port) +" "+ne_ip+" "+index;
+			String temp_data = "Initial:New:Node "+Integer.toString(ne_port) +" "+ne_ip+" "+index;
 			byte[] data = temp_data.getBytes();
 			DatagramPacket packet = new DatagramPacket(data, data.length,initial_IP,initial_port);
 			socket_s.send(packet);
