@@ -429,7 +429,7 @@ public class Node implements Runnable{
 			port_list[i]=Integer.parseInt(port_data[i]);
 
 			if (IP_data[i].equals("NULL")){IP_list[i]=null; ip_list[i]=null;
-			} else {IP_list[i]=InetAddress.getByName(IP_data[i]); ip_list[i]=IP_data[i].trim();}
+			} else {IP_list[i]=InetAddress.getByName(IP_data[i].trim()); ip_list[i]=IP_data[i].trim();}
 
 			if (account_data[i].equals("NULL")){account_list[i]=null;
 			} else {account_list[i] = new Account(account_data[i]);}
@@ -994,6 +994,10 @@ private class NodeManager implements Runnable{
 		ip_list[index] = ne_ip;
 		System.out.println(ne_ip);
 		port_list[index] = ne_port;
+		for (int i = 0 ;i<ip_list.length,i++)
+		{
+			System.out.print(ip_list[i]);
+		}
 		try {
 			//updates the repository
 			FileWriter myWriter = new FileWriter("Data.txt");
