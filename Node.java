@@ -973,6 +973,16 @@ private class NodeManager implements Runnable{
 		try {
 			IP_list[index] = InetAddress.getByName(ne_ip);
 			//Updates the repository
+					for (int i=0; i<2024; i++){
+			if (port_data[i].equals("0")){port_list[i] = 0;
+			} else {port_list[i]=Integer.parseInt(port_data[i]);}
+
+			if (IP_data[i].equals("NULL")){IP_list[i]=null;
+			} else {IP_list[i]=InetAddress.getByName(IP_data[i]);}
+
+			if (account_data[i].equals("NULL")){account_list[i]=null;
+			} else {account_list[i] = new Account(account_data[i]);}
+		}
 			ArrayList<String> command = new ArrayList<String>();
 			command.add(System.getProperty("user.dir")+File.separator+"Commit.bat");
 			ProcessBuilder pb = new ProcessBuilder(command);
