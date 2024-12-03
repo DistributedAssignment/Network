@@ -437,6 +437,8 @@ public class Node implements Runnable{
 			Wait w = new Wait();
 			(new Thread (w)).start();
 			while (!(c.getFinished() || w.getFinished())) {
+				Thread.sleep(500);
+				System.out.println("="+!(c.getFinished() || w.getFinished()));
 				//Waits in this while loop for one of the processes to finish
 			}
 			c = null;
@@ -656,7 +658,6 @@ public class Node implements Runnable{
 				}
 				long end_time = System.currentTimeMillis();
 				long time =(end_time - start_time)/1000;
-				System.out.println(time);
 				if (time >= wait) {
 					//Begins the process of removing the node from the list
 					//Unless it is of type Initial
@@ -690,10 +691,10 @@ public class Node implements Runnable{
 		}
 		long end_time = System.currentTimeMillis();
 		long time =(end_time - start_time)/1000;
-		System.out.println(time);
 		if (time >= wait) {
 			exists = false;
 			finished = true;
+			System.out.println(finished);
 			break;
 		}
 	}
@@ -734,7 +735,7 @@ public class Node implements Runnable{
 		public boolean getFinished(){
 		return finished;	
 	}
-
+	}
 	private class Receiver implements Runnable{
 		private DatagramSocket socket_r;
 		int r_port;
@@ -998,7 +999,7 @@ public class Node implements Runnable{
 	}	
 	}
 }
-}
+
 	
 
 
