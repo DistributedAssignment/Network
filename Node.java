@@ -1019,9 +1019,9 @@ private class NodeManager implements Runnable{
 			socket_s.send(packet);
 			System.out.println("10. SENT MESSAGE");
 		} catch (Exception e){e.printStackTrace();}
-		}	
-		
 	}
+		}
+}	
 
 private class Account {
 
