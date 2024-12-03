@@ -961,15 +961,9 @@ private class NodeUpdater implements Runnable{
 		public void run() {
 			try{for (int i=0; i<2024; i++){
 			if (IP_list[i]!=null){
-				if(port_list[i] != p){
 				DatagramPacket packet = new DatagramPacket(data, data.length,IP_list[i] ,port_list[i]);
 				socket_s.send(packet);
 				System.out.println("10. SENT MESSAGE");}
-			} else {
-				DatagramPacket packet = new DatagramPacket(data, data.length,IP_list[i] ,port_list[i]+1);
-				socket_s.send(packet);
-				System.out.println("10. SENT MESSAGE");
-			}
 			}
 			} catch (Exception e) {}
 		}
@@ -1041,6 +1035,9 @@ private class NodeManager implements Runnable{
 			String temp_data = "New:Node "+Integer.toString(ne_port) +" "+ne_ip+" "+index;
 			byte[] data = temp_data.getBytes();
 			//So that it is sent to the checker socket not the usual socket this is so the checker can be closed when it is finished
+			DatagramPacket packet = new DatagramPacket(data, data.length,IP_list[index],ne_port +1);
+			socket_s.send(packet);
+			System.out.println("10. SENT MESSAGE");
 			new NodeUpdater(data, ne_port).run();
 		} catch (Exception e){e.printStackTrace();}
 	
