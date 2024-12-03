@@ -745,7 +745,7 @@ public class Node implements Runnable{
 				DatagramPacket packet = new DatagramPacket(receive, receive.length);
 				socket.receive(packet);
 				System.out.println(new String(receive));
-				String n = receive.toString();
+				String n = new String(receive);
 				String[] node = n.split(" ");
 				System.out.println(node[0]);
 				index = Integer.parseInt(node[4].trim());
