@@ -553,7 +553,7 @@ public class Node implements Runnable{
 	
 	//This listens for a message from a node to see if it is still on the network
 	//It can also be used to test if the previous network which existed is still in use
-	private volatile class MessageHandler implements Runnable{
+	private class MessageHandler implements Runnable{
 		public MessageHandler() {
 			
 		}
@@ -621,7 +621,7 @@ public class Node implements Runnable{
 		}
 	}
 	
-	private volatile class UpdateHandler implements Runnable{
+	private class UpdateHandler implements Runnable{
 		String[][] updates;
 		public UpdateHandler(String[][] updates, int[] times ) {
 			this.updates = updates;
@@ -646,7 +646,7 @@ public class Node implements Runnable{
 		}
 	}
 	
-	private volatile class Listener implements Runnable{
+private class Listener implements Runnable{
 		private volatile String type;
 		private volatile int index;
 		private volatile DatagramSocket l_socket;
@@ -699,7 +699,7 @@ public class Node implements Runnable{
 			}
 		}
 			
-		private volatile class Timer implements Runnable{
+		private class Timer implements Runnable{
 			long wait;
 			long start_time;
 			public Timer() {
@@ -730,7 +730,7 @@ public class Node implements Runnable{
 	}
 	
 	//This waits to see if the initial node exists at point of connection
-private volatile class Wait implements Runnable{
+private class Wait implements Runnable{
 	long wait;
 	long start_time;
 	boolean finished;
@@ -762,7 +762,7 @@ private volatile class Wait implements Runnable{
 	}
 
 	//This is the other part of this process
-private volatile class Checker implements Runnable{
+private class Checker implements Runnable{
 	boolean finished;
 	public Checker() {
 			this.finished = false;
@@ -797,7 +797,7 @@ private volatile class Checker implements Runnable{
 	}
 	}
 
-private volatile class Receiver implements Runnable{
+private class Receiver implements Runnable{
 		public Receiver() {
 		}
 		
@@ -830,7 +830,7 @@ private volatile class Receiver implements Runnable{
 			}
 	}
 
-private volatile class Updater implements Runnable{
+private class Updater implements Runnable{
 		//When ever an account is changed the node adds the account number to the accounts queue
 		private volatile DatagramSocket u_socket;
 		private volatile int u_port;
@@ -897,7 +897,7 @@ private volatile class Updater implements Runnable{
 		
 	}	
 
-private volatile class Ping implements Runnable{
+private class Ping implements Runnable{
 		int p_port;
 		DatagramSocket p_socket;
 		public Ping(String ip) {
@@ -951,7 +951,7 @@ private volatile class Ping implements Runnable{
 		
 	}
 	
-private volatile class NodeUpdater implements Runnable{
+private class NodeUpdater implements Runnable{
 		byte[] data;
 		int p;
 		public NodeUpdater(byte[] data, int p){
@@ -971,7 +971,7 @@ private volatile class NodeUpdater implements Runnable{
 	}
 
 	//This is the thread that updates the node list in the initial node
-private volatile class NodeManager implements Runnable{
+private class NodeManager implements Runnable{
 		int ne_port;
 		String ne_ip;
 		public NodeManager(String p, String i){
@@ -1050,7 +1050,7 @@ private volatile class NodeManager implements Runnable{
 		}
 }	
 
-private volatile class Account {
+private class Account {
 
 	private volatile int account_number;
 	private volatile int money;
