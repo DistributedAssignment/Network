@@ -586,8 +586,10 @@ public class Node implements Runnable{
 		
 		}
 		}
-			catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
+			catch (NumberFormatException e) {
+				System.out.println("Updates complete");
+			}
+			catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
