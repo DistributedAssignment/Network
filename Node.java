@@ -741,10 +741,10 @@ public class Node implements Runnable{
 	}
 	private class Receiver implements Runnable{
 		private DatagramSocket socket_r;
-		int r_port;
+		int port_r;
 		public Receiver() {
 			this.socket_r = null;
-			this.r_port = 1;
+			this.port_r = 1;
 		}
 		
 		public void run() {
@@ -772,13 +772,13 @@ public class Node implements Runnable{
 			while (setup == false) {
 	    	try {
 	    		setup = true;
-	    		socket = new DatagramSocket(port,IP);
+	    		socket_r = new DatagramSocket(port_r,IP);
 			} catch (SocketException e) {
 				setup = false;
-				port +=1;
+				port_r +=1;
 			}
 			}
-			return port;
+			return port_r;
 		}
 		
 		public void destroy(){
