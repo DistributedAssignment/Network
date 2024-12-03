@@ -997,7 +997,7 @@ private class NodeManager implements Runnable{
 		try { IP_list[index] = InetAddress.getByName(ne_ip);
 		} catch (Exception e) {}
 		ip_list[index] = ne_ip;
-		System.out.println(index);
+		System.out.println(ne_ip);
 		port_list[index] = ne_port;
 		try {
 			//updates the repository
