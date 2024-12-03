@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
-public class Node implements Runnable{
+public class Node{
 	private volatile String ip;
 	private volatile InetAddress IP;
 	private volatile int port;
@@ -45,57 +45,8 @@ public class Node implements Runnable{
 	private volatile String[] node_list;
 	private volatile String name;
 	private volatile int index;
-	private volatile boolean exists;
-	public Node() {
-		this.accounts = new LinkedList<String>();
-		this.messages = new LinkedList<byte[]>();
-		this.account_list = new Account[2048];
-		this.exists = false;
-		this.ip = null;
-		this.IP = null;
-		this.ip_list = new String[2048];
-		this.port = 1;
-		this.socket = null;
-		this.initial_port = 1;
-		this.socket_s = null;
-		this.socket_c = null;
-		this.port_s = 1;
-		this.initial_ip = null;
-		this.initial_IP = null;
-		this.port_list = new int[2048];
-		this.IP_list = new InetAddress[2048];
-		this.node_list = null;
-		this.name = null;
-		this.index = 0;
-	}
-	
-	public void run() {
-		/**TO DO**/
-		/* TUESDAY
-		* TEST BY GRADUALLY ADDING THE STUFF CREATED START WITH CREATING AN INITIAL NODE AND TEST BY ADDING MORE STRUCTURE
-		 * FINISH 3
-		 * FINISH 1
-		 * 
-		 * WENSDAY
-		 * FINISH 4
-		 * REFER TO ASSIGNMENT SHEET AND CHECK OF STUFF
-		 * 
-		 * THURSDAY
-		 * ADD ANY ADDITIONAL STUFF
-		 * TEST
-		 * WRITE REPORT 
-		 * 
-		 */
-		//This sets the node up for being apart of a network
-		initialise();
+	private volatile boolean exists;	
 
-		//Now the node has been created we can now run the manager
-		/*try {
-			manager();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
-	}
 	
 	private void manager() throws Exception {
 		//This will be the interface that the client deals with when managing there accounts
@@ -545,8 +496,51 @@ public class Node implements Runnable{
 	
 	//The main method simply creates the node and starts running it
 	public static void main(String args[]) {
-		Node node = new Node();
-		node.run();
+		accounts = new LinkedList<String>();
+		messages = new LinkedList<byte[]>();
+		account_list = new Account[2048];
+		exists = false;
+		ip = null;
+		IP = null;
+		ip_list = new String[2048];
+		port = 1;
+		socket = null;
+		initial_port = 1;
+		socket_s = null;
+		socket_c = null;
+		port_s = 1;
+		initial_ip = null;
+		initial_IP = null;
+		port_list = new int[2048];
+		IP_list = new InetAddress[2048];
+		node_list = null;
+		name = null;
+		index = 0;
+		/**TO DO**/
+		/* TUESDAY
+		* TEST BY GRADUALLY ADDING THE STUFF CREATED START WITH CREATING AN INITIAL NODE AND TEST BY ADDING MORE STRUCTURE
+		 * FINISH 3
+		 * FINISH 1
+		 * 
+		 * WENSDAY
+		 * FINISH 4
+		 * REFER TO ASSIGNMENT SHEET AND CHECK OF STUFF
+		 * 
+		 * THURSDAY
+		 * ADD ANY ADDITIONAL STUFF
+		 * TEST
+		 * WRITE REPORT 
+		 * 
+		 */
+		//This sets the node up for being apart of a network
+		initialise();
+
+		//Now the node has been created we can now run the manager
+		/*try {
+			manager();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}*/
 	}
 	
 	/**Below are the classes which will be used by the network**/
@@ -1009,19 +1003,19 @@ private class NodeManager implements Runnable{
 			IP_list[index] = InetAddress.getByName(ne_ip);
 			for (int j = 1; j<2048; j++) {
 
-				myWriter.write(" "+port_list[j]);
+				myWriter.write(port_list[j]+" ");
 			}
 			myWriter.write("\n");
 			for (int j = 1; j<2048; j++) {
 				System.out.println(ip_list[j]);
 			if (ip_list[j]==null){myWriter.write("NULL ");
-			} else {System.out.println(ip_list[j]); myWriter.write(" "+ip_list[j]);}
+			} else {System.out.println(ip_list[j]); myWriter.write(ip_list[j]+" ");}
 			myWriter.write(" NULL");
 			}
 			myWriter.write("\n");
 			for (int j = 1; j<2048; j++) {
 			if (account_list[j]==null){myWriter.write("NULL ");
-			} else {myWriter.write(","+account_list[j]);}
+			} else {myWriter.write(account_list[j]+",");}
 			myWriter.write(",NULL");
 			}
 			myWriter.write("\n");
