@@ -521,6 +521,7 @@ public class Node implements Runnable{
 		(new Thread (new MessageHandler())).start();
 		(new Thread (new Receiver())).start();
 		//The console is cleared
+		System.out.println("On the network");
 		try {Runtime.getRuntime().exec("cls");
 		}catch (Exception e){}
 	}
@@ -967,7 +968,7 @@ private class NodeManager implements Runnable{
 				break;
 			}
 		}
-
+		System.out.println(index);
 		port_list[index] = ne_port;
 		try {
 			IP_list[index] = InetAddress.getByName(ne_ip);
