@@ -25,27 +25,26 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 
 public class Node implements Runnable{
-	private volatile String ip;
-	private volatile InetAddress IP;
-	private volatile int port;
-	private volatile DatagramSocket socket_s;
-	private volatile DatagramSocket socket_c;
-	private volatile int port_s;
-	private volatile int initial_port;
-	private volatile String initial_ip;
-	private volatile Queue<String> accounts;	
-	private volatile Queue<byte[]> messages;
-	private volatile InetAddress initial_IP;
-	private volatile DatagramSocket socket;
-	private volatile Account[] account_list;
-	private volatile int[] port_list;
-	private volatile InetAddress[] IP_list;
-	private volatile String[] ip_list;
-	private volatile int[] l_port_list;
-	private volatile String[] node_list;
-	private volatile String name;
-	private volatile int index;
-	private volatile boolean exists;
+	private  String ip;
+	private  InetAddress IP;
+	private  int port;
+	private  DatagramSocket socket_s;
+	private  DatagramSocket socket_c;
+	private  int port_s;
+	private  int initial_port;
+	private  String initial_ip;
+	private  Queue<String> accounts;	
+	private  Queue<byte[]> messages;
+	private  InetAddress initial_IP;
+	private  DatagramSocket socket;
+	private  Account[] account_list;
+	private  int[] port_list;
+	private  InetAddress[] IP_list;
+	private  String[] ip_list;
+	private  int[] l_port_list;
+	private  String[] node_list;
+	private  String name;
+	private  boolean exists;
 	public Node() {
 		this.accounts = new LinkedList<String>();
 		this.messages = new LinkedList<byte[]>();
@@ -66,10 +65,9 @@ public class Node implements Runnable{
 		this.IP_list = new InetAddress[2048];
 		this.node_list = null;
 		this.name = null;
-		this.index = 0;
 	}
 	
-	public synchronized void run() {
+	public  void run() {
 		/**TO DO**/
 		/* TUESDAY
 		* TEST BY GRADUALLY ADDING THE STUFF CREATED START WITH CREATING AN INITIAL NODE AND TEST BY ADDING MORE STRUCTURE
@@ -97,7 +95,7 @@ public class Node implements Runnable{
 		}*/
 	}
 	
-	private void manager() throws Exception {
+	private void  manager() throws Exception {
 		//This will be the interface that the client deals with when managing there accounts
 		final String[] MENU_LIST = {"create","manage","disconnect"};
     	Scanner myObj = new Scanner(System.in);
@@ -148,7 +146,7 @@ public class Node implements Runnable{
 		}
 	}
 
-	 private void createAccount() throws Exception {
+	 private void  createAccount() throws Exception {
 		  Scanner myObj = new Scanner(System.in);
 			boolean create = false;
 			int overdraft = 0;
@@ -228,12 +226,12 @@ public class Node implements Runnable{
 	    	}
 	    }
 	
-	 private void closeData(String account) {
+	 private void  closeData(String account) {
 		int num = Integer.parseInt(account);
 		account_list[num] = null;	
 	}
 
-	private void deposit(String account) {
+	private void  deposit(String account) {
 		Scanner myObj = new Scanner(System.in);
 	 	boolean deposit =  false;
 	 	int money = 0;
@@ -278,7 +276,7 @@ public class Node implements Runnable{
 	 	}
 	}
 
-	private void withdraw(String account) {
+	private void  withdraw(String account) {
 		Scanner myObj = new Scanner(System.in);
 	 	boolean withdraw = false;
 	 	int money = 0;
@@ -352,7 +350,7 @@ public class Node implements Runnable{
 		}
 	}
 
-	private void initialise() {
+	private synchronized void initialise() {
 		System.out.println("1. STARTED");
 		//Deal with ip
 		try {
@@ -438,571 +436,23 @@ public class Node implements Runnable{
 			e.printStackTrace();	
 		}
 		System.out.println("6. PROCESSED DATA");
-		//Now that we have the data file we can use it to initialise the connection to the nextwork
-		//The data also contains the node list
-		
-		//Now the node listen's too see if this node still exists
-		Listener search = new Listener("Connect",index);
-		try {
-			//Create the waiter so that it can be ready to catch the response
-			Checker c = new Checker();
-			Thread t_1 = (new Thread (c));
-			t_1.start();
-			//Communication is made with the initial node
-			String temp_data = "Initial:New:Node "+Integer.toString(port) +" "+ip+" "+index;
-			byte[] data = temp_data.getBytes();
-			DatagramPacket packet = new DatagramPacket(data, data.length,initial_IP,initial_port);
-			socket_s.send(packet);
-			packet = null;
 
-			//Waiter is started
-			Wait w = new Wait();
-			Thread t_2 = (new Thread (w));
-			t_2.start();
-			while (!(c.getFinished() || w.getFinished())) {
-				//Waits in this while loop for one of the processes to finish
-				Thread.sleep(1000);
-				System.out.println("Waiting... ");
-			}
-			if (w.getFinished()){
-				System.out.println("No initial node");
-				c.destroy();
-				t_1.interrupt();
-			} else if (c.getFinished()){
-				System.out.println("Initial node found");
-				t_2.interrupt();
-				c.destroy();
-			}
-			c = null;
-			w = null;
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		System.out.println("7. LISTENED");
-		/*
-		*If the initial node does not exists the first things that needs to be done is the repository needs to be updated
-		*
-		*/
-		if (!exists) {
-			try {
-				initial_port = port;
-				initial_IP = IP;
-				initial_ip = ip;
-			FileWriter myWriter = new FileWriter("Data.txt");
-			myWriter.write(Integer.toString(port));
-			myWriter.write(" ");
-			myWriter.write(ip);
-			myWriter.write("\n");
-			myWriter.write(Integer.toString(port));
-			for (int j = 1; j<2048; j++) {
-			myWriter.write("0 ");
-			}
-			myWriter.write("\n");
-			myWriter.write(ip);
-			for (int j = 1; j<2048; j++) {
-			myWriter.write("NULL ");
-			}
-			myWriter.write("\n");
-			//This is the account list which will be gotten by a new node as well
-			for (int j = 0; j<2048; j++) {
-			myWriter.write("NULL,");
-			}
-			myWriter.write("\n");
-			myWriter.close();
-			System.out.println("8. WRITTEN");
-			ArrayList<String> command = new ArrayList<String>();
-			command.add(System.getProperty("user.dir")+File.separator+"Commit.bat");
-			ProcessBuilder pb = new ProcessBuilder(command);
-			pb.directory(new File("I:\\git\\Network"));
-			Process p = pb.start();
-			} catch (Exception e) {
-			e.printStackTrace();
-			}	
-			System.out.println("9. COMMIT");
-		} 
-
-		
-		(new Thread (new MessageHandler())).start();
-		(new Thread (new Receiver())).start();
-		//The console is cleared
-		System.out.println("On the network");
-		try {Runtime.getRuntime().exec("cls");
-		}catch (Exception e){}
-	}
-	
-	
-	//This returns the IP that the computer is operating on
-	private static String getLocalAddress() {
-	    try (DatagramSocket skt = new DatagramSocket()) {
-	        // Use default gateway and arbitrary port
-	        skt.connect(InetAddress.getByName("192.168.1.1"), 12345);
-	        return skt.getLocalAddress().getHostAddress();
-	    } catch (Exception e) {
-	        return null;
-	    }
-		}
-	
-	//The main method simply creates the node and starts running it
-	public static void main(String args[]) {
-		Node node = new Node();
-		node.run();
-	}
-	
-	/**Below are the classes which will be used by the network**/
-	
-	//This listens for a message from a node to see if it is still on the network
-	//It can also be used to test if the previous network which existed is still in use
-	private class MessageHandler implements Runnable{
-		public MessageHandler() {
-			
-		}
-		
-		
-		public void run() {
-			while (true){
-			try {Thread.sleep(500);
-			} catch (Exception e){
-				e.printStackTrace();
-			}
-			String[][] updates = new String[20][5];
-			String[][] nodes = new String[20][5];
-			int[] times = new int[20];
-			int n = 0;
-			int k = 0;
-			boolean ups = false;
-			boolean noes = false;
-			for (int i = 0; i<20; i++) {
-				try {
-				String[] m = (new String(messages.remove())).split(" ");
-				//Preps the updates and new nodes to be handled separately
-				System.out.println(m[0]); 
-				System.out.println(m[1]); 
-				System.out.println(m[2]); 
-				if (m[0].trim().equals("Update")) {
-					updates[n] = m;
-					n+=1;
-					ups = true;
-				} else if (m[0].trim().equals("New:Node")){
-					nodes[k] = m;
-					k+=1;
-					noes = true;
-				} else if (m[0].trim().equals("Initial:Fail")){
-					/***ADD LATER***/
-				}  else if (m[0].trim().equals("Initial:New:Node")){
-					System.out.println("New Node Connecting");
-					(new Thread (new NodeManager(m[1].trim(),m[2].trim()))).start();
-				} else if (m[0].trim().equals("New:Account")){
-					/***ADD LATER***/
-				}
-				} catch (Exception e) {
-					//If all messages have been put in the block
+			//Updates the node lists 
+			int index = 0;
+			for (int i=0; i<2024; i++){
+				if (IP_list[i]==null){
+					index = i;
 					break;
 				}
 			}
-			//So the update management is started
-			if (ups){(new Thread (new UpdateHandler(updates, times))).start();}
-			if (noes){
-				System.out.println("Updatating node list");
-				try {
-				int j =0;
-				for (int i = 0; i<nodes.length;i++) {
-						j = Integer.parseInt(nodes[i][3].trim());
-						port_list[j] = Integer.parseInt(nodes[i][1].trim());
-						IP_list[j] = InetAddress.getByName(nodes[i][2].trim());
-						Listener l = new Listener("Node",j);
-						(new Thread(l)).start();
-				}
-				} catch (UnknownHostException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		}
-	}
-	
-	private class UpdateHandler implements Runnable{
-		String[][] updates;
-		public UpdateHandler(String[][] updates, int[] times ) {
-			this.updates = updates;
-		}
-		
-		
-		public void run() {
-			try {
-			int j =0;
-			for (int i = 0; i<updates.length;i++) {
-				j = Integer.parseInt(updates[i][4]);
-				port_list[j] = Integer.parseInt(updates[i][1]);
-				IP_list[j] = InetAddress.getByName(updates[i][2]);
-				Listener l = new Listener("Node",j);
-				(new Thread(l)).start();
-		
-		}
-		}
-			catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-private class Listener implements Runnable{
-		private volatile String type;
-		private volatile int index;
-		private volatile DatagramSocket l_socket;
-		private volatile Thread t;
-		private volatile int l_port;
-		private volatile boolean listen;
-		public Listener(String t, int i) {
-			this.type = t;
-			this.l_socket = null;
-			this.l_port = 1;
-			this.t = null;
-			this.index = i;
-			this.listen = true;
-		}
-		
-		public void destroy() throws Exception {
-			l_socket.close();
-		}
-		
-		public void run() {
-			initialise();
-			l_port_list[index] = l_port;
-			while(listen) {
-				//As this is listening for one node one time it just starts the times and waits
-				byte[] receive = new byte[1028];
-				t = (new Thread (new Timer()));
-				t.start();
-				try {
-					DatagramPacket packet = new DatagramPacket(receive, receive.length);
-					l_socket.receive(packet);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				//If a package is received the timer is stopped and the run() method terminates
-				t.interrupt();
-			}
-		}
-		
-		private void initialise() {
-			//Create a socket this is done by trying to create one until a port not in use is found
-			boolean found = false;
-			while (!found) {
-				try {
-					l_socket = new DatagramSocket(l_port,IP);
-					found = true;
-				} catch (Exception e) {
-					found = false;
-					l_port += 1;
-				}
-			}
-		}
-			
-		private class Timer implements Runnable{
-			long wait;
-			long start_time;
-			public Timer() {
-				this.start_time = System.currentTimeMillis();
-				this.wait = 25;
-			}
-			public void run() {			
-			while(true) {
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				long end_time = System.currentTimeMillis();
-				long time =(end_time - start_time)/1000;
-				if (time >= wait) {
-					//Begins the process of removing the node from the list
-					//Unless it is of type Initial
-					if (type.equals("Initial")) {
-						//Process for creating new initial node
-					} else {
-						//Process of removing node from list
-					}
-				}
-			}
-		}
-		}
-	}
-	
-	//This waits to see if the initial node exists at point of connection
-private class Wait implements Runnable{
-	long wait;
-	long start_time;
-	boolean finished;
-	public Wait() {
-		this.start_time = System.currentTimeMillis();
-		this.wait = 5;
-		this.finished = false;
-	}
-	public void run() {			
-	while(true) {
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		long end_time = System.currentTimeMillis();
-		long time =(end_time - start_time)/1000;
-		if (time >= wait) {
-			exists = false;
-			finished = true;		
-			break;
-		}
-	}
-	}
-
-	public boolean getFinished(){
-		return finished;
-	}
-	}
-
-	//This is the other part of this process
-private class Checker implements Runnable{
-	boolean finished;
-	public Checker() {
-			this.finished = false;
-	}
-	public void run() {			
-			try {
-				byte[] receive = new byte[1028];
-				DatagramPacket packet = new DatagramPacket(receive, receive.length);
-				socket_c.receive(packet);
-				System.out.println(new String(receive));
-				String n = new String(receive);
-				String[] node = n.split(" ");
-				index = Integer.parseInt(node[3].trim());
-				port_list[index] = Integer.parseInt(node[1].trim());
-				try {IP_list[index] = InetAddress.getByName(node[2].trim());
-				} catch (Exception e) {
-					e.printStackTrace();	
-				}
-				exists = true;
-				finished = true;
-			} catch (Exception e) {
-				System.out.println("Checker Finished");
-			}
-	}
-	public void destroy(){
-		socket_c.close();
-	}
-	
-
-	public boolean getFinished(){
-	return finished;	
-	}
-	}
-
-private class Receiver implements Runnable{
-		public Receiver() {
-		}
-		
-		public void run() {
-			byte[] receive;
-			while (true) {
-				System.out.println("Waiting");
-		receive = new byte[1028];
-				//Waits to receive a connection request from a client
-				DatagramPacket packet = new DatagramPacket(receive, receive.length);
-				try {
-					socket.receive(packet);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				System.out.println("Received");
-				messages.add(receive);
-				packet = null;
-				}	
-			}
-		
-		public byte[] getMessage() {
-			return messages.remove();
-		}
-
-		public void destroy(){
-			socket.close();
-			messages = null;
-			port = 0;
-			}
-	}
-
-private class Updater implements Runnable{
-		//When ever an account is changed the node adds the account number to the accounts queue
-		private volatile DatagramSocket u_socket;
-		private volatile int u_port;
-		public Updater(){
-			this.u_socket = null;
-			this.u_port = 1;
-			
-		}
-		
-		public void run() {
-			//The socket is created 
-			initialise();
-			
-			while (true) {
-			try {
-			//Tries to retrieve an account
-			String temp_data;
-			byte[] data;
-			String account = accounts.remove();	
-			/**If this an account that has been removed**/
-			if (account_list[Integer.parseInt(account)] == null) {
-				//Now this will be sent to every node in the network
-				for (int i = 0; i < port_list.length ;i++) {
-				temp_data = "Update "+account+" null "+Integer.toString(port) +" "+ip+" "+i;
-				data = temp_data.getBytes();
-				DatagramPacket packet = new DatagramPacket(data, data.length,IP_list[i],port_list[i]);
-				u_socket.send(packet);
-				packet = null;
-				}
-				break;
-			}
-			
-			/**If this is an account that still exists or has been created**/
-			String account_data = account_list[Integer.parseInt(account)].getStringFormat();
-			
-			//Now this will be sent to every node in the network
-			for (int i = 0; i < port_list.length ;i++) {
-			temp_data = "Update "+account_data+" "+Integer.toString(port) +" "+ip+" "+i;
-			data = temp_data.getBytes();
-			DatagramPacket packet = new DatagramPacket(data, data.length,IP_list[i],port_list[i]);
-			u_socket.send(packet);
-			packet = null;
-			}
-			System.err.println(name + " Updater; Sending update of account");
-			} catch (NoSuchElementException | IOException e) {
-				System.err.println(name + " Updater; No accounts to update");
-			}
-			}
-		}
-		
-		private void initialise() {
-			//Create a socket this is done by trying to create one until a port not in use is found
-			boolean found = false;
-			while (!found) {
-				try {
-					u_socket = new DatagramSocket(u_port,IP);
-					found = true;
-				} catch (Exception e) {
-					found = false;
-					u_port += 1;
-				}
-			}
-		}
-		
-	}	
-
-private class Ping implements Runnable{
-		int p_port;
-		DatagramSocket p_socket;
-		public Ping(String ip) {
-			//Initialise the information about the socket
-			this.p_port =  1;
-			this.p_socket = null;
-		}
-		
-		private void initialise() {
-			
-		    boolean setup= false;
-			while (setup == false) {
-		    	try {
-		    		setup = true;
-		    		p_socket = new DatagramSocket(p_port,IP);
-				} catch (SocketException e) {
-					setup = false;
-					p_port +=1;
-				}
-		    }
-		}
-		
-		public void run() {
-			initialise();
-			//So the ping reads from the node arrays and sends a ping to the listener 
-			int i = 0;
-			while (true) {
-				while (i<IP_list.length) {
-					if (!(IP_list[i]==null)) {
-						String data_str = Integer.toString(p_port);
-						byte[] data = data_str.getBytes();
-						DatagramPacket packet;
-						try {
-							packet = new DatagramPacket(data, (data).length,IP_list[i], l_port_list[i]);
-							socket_s.send(packet);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						i += 1;
-					}
-				}
-				i = 0;
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			
-		}
-		
-	}
-	
-private class NodeUpdater implements Runnable{
-		byte[] data;
-		int p;
-		public NodeUpdater(byte[] data, int p){
-			this.p = p;
-			this.data = data;
-		}
-		
-		public void run() {
-			try{for (int i=0; i<2024; i++){
-			if (IP_list[i]!=null){
-				DatagramPacket packet = new DatagramPacket(data, data.length,IP_list[i] ,port_list[i]);
-				socket_s.send(packet);
-				System.out.println("10. SENT MESSAGE");}
-			}
+			port_list[index] = ne_port; 
+			try { IP_list[index] = InetAddress.getByName(ne_ip);
 			} catch (Exception e) {}
-		}
-	}
+			ip_list[index] = ne_ip;
+			System.out.println(ne_ip);
+			port_list[index] = ne_port;
 
-	//This is the thread that updates the node list in the initial node
-private class NodeManager implements Runnable{
-		int ne_port;
-		String ne_ip;
-		public NodeManager(String p, String i){
-			this.ne_port = Integer.parseInt(p);
-			this.ne_ip = i;
-		}
-		
-		public void run() {
-		System.out.println("Managing");
-		int index = 0;
-		for (int i=0; i<2024; i++){
-			if (IP_list[i]==null){
-				index = i;
-				break;
-			}
-		}
-		port_list[index] = ne_port; 
-		try { IP_list[index] = InetAddress.getByName(ne_ip);
-		} catch (Exception e) {}
-		ip_list[index] = ne_ip;
-		System.out.println(ne_ip);
-		port_list[index] = ne_port;
-		for (int i = 0 ;i<ip_list.length;i++)
-		{
-			System.out.print(ip_list[i]);
-		}
-		try {
-			//updates the repository
-			FileWriter myWriter = new FileWriter("Data.txt");
-			myWriter.write(Integer.toString(port));
-			myWriter.write(" ");
+			//Changes the data file and updates the repository
 			myWriter.write(ip);
 			myWriter.write("\n");
 			myWriter.write(Integer.toString(port));
@@ -1037,112 +487,34 @@ private class NodeManager implements Runnable{
 			Process p = pb.start();
 			System.out.println("10. NEW NODE COMMIT");
 
-			//Send new information to the new node
-			String temp_data = "New:Node "+Integer.toString(ne_port) +" "+ne_ip+" "+index;
-			byte[] data = temp_data.getBytes();
-			//So that it is sent to the checker socket not the usual socket this is so the checker can be closed when it is finished
-			DatagramPacket packet = new DatagramPacket(data, data.length,IP_list[index],ne_port +1);
-			socket_s.send(packet);
-			System.out.println("10. SENT MESSAGE");
-			new NodeUpdater(data, ne_port).run();
-		} catch (Exception e){e.printStackTrace();}
-	
-		}
-}	
-
-private class Account {
-
-	private volatile int account_number;
-	private volatile int money;
-	private volatile int overdraft;
-	//The different constructers are useful as account data can exists in a few different forms depending on how it is being processsed
-	public Account(){
-		this.account_number = 0;
-		this.money = 0;
-		this.overdraft = 0;
-	}
-	
-	public Account(int account_number, int money, int overdraft){
-		this.account_number = account_number;
-		this.money = money;
-		this.overdraft = overdraft;
-	}
-	
-	public Account(String data){
-		String[] a = data.split(" ");
-		if (a.length == 3){
-		this.account_number =Integer.parseInt(a[0].trim());
-		this.money = Integer.parseInt(a[1].trim());
-		this.overdraft = Integer.parseInt(a[2].trim());
-		}
-	}
-
-	public Account(String[] a){
-		if (a.length == 3){
-		this.account_number =Integer.parseInt(a[0].trim());
-		this.money = Integer.parseInt(a[1].trim());
-		this.overdraft = Integer.parseInt(a[2].trim());
-		}
-	}
-
-	public int getNumber() {
-		return account_number;
-	}
-	
-	public int getMoney() {
-		return money;
-	}
-
-	public int getOverdraft() {
-		return overdraft;
-	}
-	
-	//These are the three methods required to edit an account locally within a node
-	public int withdraw(int withdrawl) {
-	if (withdrawl>=0) {
-		if (money-withdrawl < 0) {
-			if (-1*(money-withdrawl) < overdraft) {
-				money = money-withdrawl;
-				return money;
-			} else {
-				return -1;
+			//Notifys all of the changes
+			try{for (int i=0; i<2024; i++){
+			if (IP_list[i]!=null){
+				DatagramPacket packet = new DatagramPacket(data, data.length,IP_list[i] ,port_list[i]);
+				socket_s.send(packet);
+				System.out.println("10. SENT MESSAGE");}
 			}
-		} else {
-			money = money-withdrawl;
-			return money;				
+			} catch (Exception e) {}
 		}
-	} else {
-		return -2;
-	}
-	}
-	
-	public int deposit(int deposit) {
-	if (deposit>=0) {
-		money += deposit;
-		return money;
-	} else {
-		return -1;
-	}
+
+		//FINISH
 	}
 	
-	public void close() {
-		account_number = -1000;			
+	//This returns the IP that the computer is operating on
+	private static String getLocalAddress() {
+	    try (DatagramSocket skt = new DatagramSocket()) {
+	        // Use default gateway and arbitrary port
+	        skt.connect(InetAddress.getByName("192.168.1.1"), 12345);
+	        return skt.getLocalAddress().getHostAddress();
+	    } catch (Exception e) {
+	        return null;
+	    }
+		}
+	
+	//The main method simply creates the node and starts running it
+	public static void main(String args[]) {
+		Node node = new Node();
+		node.run();
 	}
 
-	//Data for an account can be retrieved in the form of a byte[] array or String
-	public byte[] getDataFormat() {
-		String a = Integer.toString(account_number) + " "  +Integer.toString(money) + " "  +Integer.toString(overdraft);
-		byte[] b = a.getBytes();
-		return b;
-	}
-	
-	public String getStringFormat() {
-		String a = Integer.toString(account_number) + " "  +Integer.toString(money) + " "  +Integer.toString(overdraft);
-		return a;
-	}	
-	}
 }
-
-	
-
-
