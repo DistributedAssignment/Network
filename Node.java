@@ -1005,7 +1005,7 @@ private class NodeManager implements Runnable{
 			//This is the account list which will be gotten by a new node as well
 			for (int j = 0; j<2048; j++) {
 			myWriter.write("NULL,");
-			
+			}
 			myWriter.close();
 			ArrayList<String> command = new ArrayList<String>();
 			command.add(System.getProperty("user.dir")+File.separator+"Commit.bat");
