@@ -520,6 +520,8 @@ public class Node implements Runnable{
 
 		(new Thread (new MessageHandler())).start();
 		(new Thread (new Receiver())).start();
+		//The console is cleared
+		Runtime.getRuntime().exec("cls");
 	}
 	
 	
