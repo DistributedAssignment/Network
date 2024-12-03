@@ -64,9 +64,9 @@ public class Node implements Runnable{
 	public void run() {
 		/**TO DO**/
 		/* TUESDAY
+		* TEST BY GRADUALLY ADDING THE STUFF CREATED START WITH CREATING AN INITIAL NODE AND TEST BY ADDING MORE STRUCTURE
 		 * FINISH 3
 		 * FINISH 1
-		 * TEST BY GRADUALLY ADDING THE STUFF CREATED START WITH CREATING AN INITIAL NODE AND TEST BY ADDING MORE STRUCTURE
 		 * 
 		 * WENSDAY
 		 * FINISH 4
@@ -430,7 +430,7 @@ public class Node implements Runnable{
 			Checker c = new Checker();
 			(new Thread (c)).start();
 			//Communication is made with the initial node
-			String temp_data = "New Node Initial "+Integer.toString(port) +" "+ip+" "+index;
+			String temp_data = "Initial New Node "+Integer.toString(port) +" "+ip+" "+index;
 			byte[] data = temp_data.getBytes();
 			DatagramPacket packet = new DatagramPacket(data, data.length,initial_IP,initial_port);
 			socket.send(packet);
@@ -488,10 +488,10 @@ public class Node implements Runnable{
 			e.printStackTrace();
 			}	
 			System.out.println("9. COMMIT");
-		} else {
+		} 
 
-		}
-
+		(new Thread (new MessageHandler())).start();
+		(new Thread (new Receiver())).start();
 	}
 	
 	
@@ -532,17 +532,17 @@ public class Node implements Runnable{
 				try {
 				String[] m = (new String(messages.remove())).split(" ");
 				//Preps the updates to handled separately 
-				if (m[1].equals("Update")) {
+				if (m[0].equals("Update")) {
 					updates[n] = m;
 					n+=1;
-				} else if (m[1].equals("New Node")){
+				} else if (m[0].equals("New Node")){
 					nodes[k] = m;
 					n+=1;
-				} else if (m[1].equals("Initial Fail")){
+				} else if (m[0].equals("Initial Fail")){
 					/***ADD LATER***/
-				}  else if (m[1].equals("Initial New Node")){
-					/***ADD LATER***/
-				} else if (m[1].equals("New Account")){
+				}  else if (m[0].equals("Initial New Node")){
+					(new Thread (new NodeManager(m[1].trim(),m[2].trim()))).start();
+				} else if (m[0].equals("New Account")){
 					/***ADD LATER***/
 				}
 				} catch (Exception e) {
@@ -722,14 +722,14 @@ public class Node implements Runnable{
 				System.out.println(new String(receive));
 				String n = receive.toString();
 				String[] node = n.split(" ");
-				port_list[Integer.parseInt(node[5].trim())] = Integer.parseInt(node[1].trim());
-				try {IP_list[Integer.parseInt(node[5].trim())] = InetAddress.getByName(node[2].trim());
+				index = Integer.parseInt(node[4].trim());
+				port_list[index] = Integer.parseInt(node[1].trim());
+				try {IP_list[index] = InetAddress.getByName(node[2].trim());
 				} catch (Exception e) {
 					e.printStackTrace();	
 				}
 				exists = true;
 				finished = true;
-				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -917,15 +917,44 @@ public class Node implements Runnable{
 
 		}
 	}
-
+	//This is the thread that updates the node list in the initial node
 	private class NodeManager implements Runnable{
-		public NodeManager(){
-			
+		int ne_port;
+		String ne_ip;
+		public NodeManager(String p, String i){
+			this.ne_port = Integer.parseInt(p);
+			this.ne_ip = i;
 		}
 		
 		public void run() {
-			
+		int index = 0;
+		for (int i=0; i<2024; i++){
+			if (IP_list[i]==null){
+				index = i;
+				break;
+			}
 		}
+
+		port_list[index] = ne_port;
+		try {
+			IP_list[index] = InetAddress.getByName(ne_ip);
+			//Updates the repository
+			ArrayList<String> command = new ArrayList<String>();
+			command.add(System.getProperty("user.dir")+File.separator+"Commit.bat");
+			ProcessBuilder pb = new ProcessBuilder(command);
+			pb.directory(new File("I:\\git\\Network"));
+			Process p = pb.start();
+			System.out.println("10. NEW NODE COMMIT");
+
+			//Send new information to the new node
+			String temp_data = "Initial New Node "+Integer.toString(ne_port) +" "+ne_ip+" "+index;
+			byte[] data = temp_data.getBytes();
+			DatagramPacket packet = new DatagramPacket(data, data.length,initial_IP,initial_port);
+			socket.send(packet);
+			System.out.println("10. SENT MESSAGE");
+		} catch (Exception e){e.printStackTrace();}
+		}	
+		
 	}
 
 	private class Account {
