@@ -585,7 +585,7 @@ public class Node implements Runnable{
 					ups = true;
 				} else if (m[0].trim().equals("New:Node")){
 					nodes[k] = m;
-					n+=1;
+					k+=1;
 					noes = true;
 				} else if (m[0].trim().equals("Initial:Fail")){
 					/***ADD LATER***/
@@ -607,7 +607,7 @@ public class Node implements Runnable{
 				try {
 				int j =0;
 				for (int i = 0; i<nodes.length;i++) {
-						j = Integer.parseInt(nodes[i][4]);
+						j = Integer.parseInt(nodes[i][3]);
 						port_list[j] = Integer.parseInt(nodes[i][1]);
 						IP_list[j] = InetAddress.getByName(nodes[i][2]);
 						Listener l = new Listener("Node",j);
@@ -804,6 +804,7 @@ private class Receiver implements Runnable{
 		public void run() {
 			byte[] receive;
 			while (true) {
+				System.out.prinln("Waiting");
 		receive = new byte[1028];
 				//Waits to receive a connection request from a client
 				DatagramPacket packet = new DatagramPacket(receive, receive.length);
