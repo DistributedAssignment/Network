@@ -522,6 +522,7 @@ public class Node implements Runnable{
 			System.out.println("9. COMMIT");
 		} 
 
+		
 		(new Thread (new MessageHandler())).start();
 		(new Thread (new Receiver())).start();
 		//The console is cleared
@@ -1003,7 +1004,7 @@ private class NodeManager implements Runnable{
 			for (int j = 0; j<2048; j++) {
 			myWriter.write("NULL,");
 			
-
+			myWriter.close();
 			ArrayList<String> command = new ArrayList<String>();
 			command.add(System.getProperty("user.dir")+File.separator+"Commit.bat");
 			ProcessBuilder pb = new ProcessBuilder(command);
