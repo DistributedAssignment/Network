@@ -445,14 +445,15 @@ public class Node implements Runnable{
 					break;
 				}
 			}
-			port_list[index] = ne_port; 
+			port_list[index] = port; 
 			try { IP_list[index] = InetAddress.getByName(ne_ip);
 			} catch (Exception e) {}
-			ip_list[index] = ne_ip;
+			ip_list[index] = ip;
 			System.out.println(ne_ip);
 			port_list[index] = ne_port;
 
 			//Changes the data file and updates the repository
+				        FileWriter myWriter = new FileWriter("Data.txt");
 			myWriter.write(ip);
 			myWriter.write("\n");
 			myWriter.write(Integer.toString(port));
