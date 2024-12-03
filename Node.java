@@ -556,7 +556,6 @@ public class Node implements Runnable{
 			} catch (Exception e){
 				e.printStackTrace();
 			}
-			System.out.println("Reading");
 			String[][] updates = new String[20][5];
 			String[][] nodes = new String[20][5];
 			int[] times = new int[20];
@@ -772,8 +771,8 @@ private class Checker implements Runnable{
 				}
 				exists = true;
 				finished = true;
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				System.out.println("Checker Finished");
 			}
 	}
 	public void destroy(){
@@ -793,7 +792,7 @@ private class Receiver implements Runnable{
 		public void run() {
 			byte[] receive;
 			while (true) {
-				receive = new byte[1028];
+		receive = new byte[1028];
 				//Waits to receive a connection request from a client
 				DatagramPacket packet = new DatagramPacket(receive, receive.length);
 				try {
