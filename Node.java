@@ -487,6 +487,8 @@ public class Node implements Runnable{
 			System.out.println("10. NEW NODE COMMIT");
 
 			//Notifys all of the changes
+			String temp = "New Node "+port+" "+ip;
+			byte[] data = temp.getBytes();
 			try{for (int i=0; i<2024; i++){
 			if (IP_list[i]!=null){
 				DatagramPacket packet = new DatagramPacket(data, data.length,IP_list[i] ,port_list[i]);
