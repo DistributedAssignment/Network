@@ -531,7 +531,7 @@ public class Node implements Runnable{
 			for (int i = 0; i<20; i++) {
 				try {
 				String[] m = (new String(messages.remove())).split(" ");
-				//Preps the updates to handled separately 
+				//Preps the updates and new nodes to be handled separately 
 				if (m[0].equals("Update")) {
 					updates[n] = m;
 					n+=1;
