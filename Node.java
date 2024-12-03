@@ -607,9 +607,9 @@ public class Node implements Runnable{
 				try {
 				int j =0;
 				for (int i = 0; i<nodes.length;i++) {
-						j = Integer.parseInt(nodes[i][3].trim(););
-						port_list[j] = Integer.parseInt(nodes[i][1].trim(););
-						IP_list[j] = InetAddress.getByName(nodes[i][2].trim(););
+						j = Integer.parseInt(nodes[i][3].trim());
+						port_list[j] = Integer.parseInt(nodes[i][1].trim());
+						IP_list[j] = InetAddress.getByName(nodes[i][2].trim());
 						Listener l = new Listener("Node",j);
 						(new Thread(l)).start();
 				}
@@ -815,6 +815,7 @@ private class Receiver implements Runnable{
 				}
 				System.out.println("Received");
 				messages.add(receive);
+				packet = null;
 				}	
 			}
 		
