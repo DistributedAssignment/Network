@@ -410,6 +410,7 @@ public class Node implements Runnable{
 			if (port_data[i].equals("0")){port_list[i] = 0;
 			} else {port_list[i]=Integer.parseInt(port_data[i]);}
 
+			System.out.println(IP_data[i]);
 			if (IP_data[i].equals("NULL")){IP_list[i]=null;
 			} else {IP_list[i]=InetAddress.getByName(IP_data[i]);}
 
