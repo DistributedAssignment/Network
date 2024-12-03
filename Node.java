@@ -455,7 +455,6 @@ public class Node implements Runnable{
 		*If the initial node does not exists the first things that needs to be done is the repository needs to be updated
 		*
 		*/
-		System.out.print(exists);
 		if (!exists) {
 			try {
 			FileWriter myWriter = new FileWriter("Data.txt");
@@ -463,26 +462,22 @@ public class Node implements Runnable{
 			myWriter.write(" ");
 			myWriter.write(ip);
 			myWriter.write("\n");
-			System.out.println("A");
 			myWriter.write(Integer.toString(port));
 			for (int j = 1; j<2048; j++) {
 			myWriter.write(" 0");
 			}
 			myWriter.write("\n");
-System.out.println("A");
 			myWriter.write(ip);
 			for (int j = 1; j<2048; j++) {
 			myWriter.write(" NULL");
 			}
 			myWriter.write("\n");
-			System.out.println("A");
 			//This is the account list which will be gotten by a new node as well
 			for (int j = 0; j<2048; j++) {
 			myWriter.write("NULL,");
 			}
 			myWriter.write("\n");
 			myWriter.close();
-System.out.println("A");
 			System.out.println("8. WRITTEN");
 			ArrayList<String> command = new ArrayList<String>();
 			command.add(System.getProperty("user.dir")+File.separator+"Commit.bat");
