@@ -533,7 +533,7 @@ public class Node implements Runnable{
 	
 	
 	//This returns the IP that the computer is operating on
-	private volatile static String getLocalAddress() {
+	private static String getLocalAddress() {
 	    try (DatagramSocket skt = new DatagramSocket()) {
 	        // Use default gateway and arbitrary port
 	        skt.connect(InetAddress.getByName("192.168.1.1"), 12345);
