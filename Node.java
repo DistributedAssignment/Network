@@ -554,20 +554,20 @@ public class Node implements Runnable{
 				try {
 				String[] m = (new String(messages.remove())).split(" ");
 				//Preps the updates and new nodes to be handled separately 
-				if (m[0].equals("Update")) {
+				if (m[0].trim().equals("Update")) {
 					updates[n] = m;
 					n+=1;
 					ups = true;
-				} else if (m[0].equals("New:Node")){
+				} else if (m[0].trim().equals("New:Node")){
 					nodes[k] = m;
 					n+=1;
 					noes = true;
-				} else if (m[0].equals("Initial:Fail")){
+				} else if (m[0].trim().equals("Initial:Fail")){
 					/***ADD LATER***/
-				}  else if (m[0].equals("Initial:New:Node")){
+				}  else if (m[0].trim().equals("Initial:New:Node")){
 					System.out.println("New Node Connecting");
 					(new Thread (new NodeManager(m[1].trim(),m[2].trim()))).start();
-				} else if (m[0].equals("New:Account")){
+				} else if (m[0].trim().equals("New:Account")){
 					/***ADD LATER***/
 				}
 				} catch (Exception e) {
