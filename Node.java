@@ -804,7 +804,7 @@ private class Receiver implements Runnable{
 		public void run() {
 			byte[] receive;
 			while (true) {
-				System.out.prinln("Waiting");
+				System.out.println("Waiting");
 		receive = new byte[1028];
 				//Waits to receive a connection request from a client
 				DatagramPacket packet = new DatagramPacket(receive, receive.length);
@@ -1009,12 +1009,13 @@ private class NodeManager implements Runnable{
 			myWriter.write(Integer.toString(port));
 			IP_list[index] = InetAddress.getByName(ne_ip);
 			for (int j = 1; j<2048; j++) {
+
 				myWriter.write(" "+port_list[j]);
 			}
 			myWriter.write("\n");
 			for (int j = 1; j<2048; j++) {
 			if (ip_list[j]==null){myWriter.write(" NULL");
-			} else {myWriter.write(" "+ip_list[j]);}
+			} else {System.out.println(ip_list[j]); myWriter.write(" "+ip_list[j]);}
 			myWriter.write(" NULL");
 			}
 			myWriter.write("\n");
