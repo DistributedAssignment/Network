@@ -25,27 +25,27 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 
 public class Node implements Runnable{
-	private String ip;
-	private InetAddress IP;
-	private int port;
-	private DatagramSocket socket_s;
-	private DatagramSocket socket_c;
-	int port_s;
-	private int initial_port;
-	private String initial_ip;
-	private Queue<String> accounts;	
-	private Queue<byte[]> messages;
-	private InetAddress initial_IP;
-	private DatagramSocket socket;
-	private Account[] account_list;
-	private int[] port_list;
-	private InetAddress[] IP_list;
-	private String[] ip_list;
-	private int[] l_port_list;
-	private String[] node_list;
-	private String name;
-	private int index;
-	private boolean exists;
+	private volatile String ip;
+	private volatile InetAddress IP;
+	private volatile int port;
+	private volatile DatagramSocket socket_s;
+	private volatile DatagramSocket socket_c;
+	private volatile int port_s;
+	private volatile int initial_port;
+	private volatile String initial_ip;
+	private volatile Queue<String> accounts;	
+	private volatile Queue<byte[]> messages;
+	private volatile InetAddress initial_IP;
+	private volatile DatagramSocket socket;
+	private volatile Account[] account_list;
+	private volatile int[] port_list;
+	private volatile InetAddress[] IP_list;
+	private volatile String[] ip_list;
+	private volatile int[] l_port_list;
+	private volatile String[] node_list;
+	private volatile String name;
+	private volatile int index;
+	private volatile boolean exists;
 	public Node() {
 		this.accounts = new LinkedList<String>();
 		this.messages = new LinkedList<byte[]>();
@@ -533,7 +533,7 @@ public class Node implements Runnable{
 	
 	
 	//This returns the IP that the computer is operating on
-	private static String getLocalAddress() {
+	private volatile static String getLocalAddress() {
 	    try (DatagramSocket skt = new DatagramSocket()) {
 	        // Use default gateway and arbitrary port
 	        skt.connect(InetAddress.getByName("192.168.1.1"), 12345);
@@ -553,7 +553,7 @@ public class Node implements Runnable{
 	
 	//This listens for a message from a node to see if it is still on the network
 	//It can also be used to test if the previous network which existed is still in use
-	private class MessageHandler implements Runnable{
+	private volatile class MessageHandler implements Runnable{
 		public MessageHandler() {
 			
 		}
@@ -621,7 +621,7 @@ public class Node implements Runnable{
 		}
 	}
 	
-	private class UpdateHandler implements Runnable{
+	private volatile class UpdateHandler implements Runnable{
 		String[][] updates;
 		public UpdateHandler(String[][] updates, int[] times ) {
 			this.updates = updates;
@@ -646,13 +646,13 @@ public class Node implements Runnable{
 		}
 	}
 	
-	private class Listener implements Runnable{
-		private String type;
-		private int index;
-		private DatagramSocket l_socket;
-		private Thread t;
-		private int l_port;
-		private boolean listen;
+	private volatile class Listener implements Runnable{
+		private volatile String type;
+		private volatile int index;
+		private volatile DatagramSocket l_socket;
+		private volatile Thread t;
+		private volatile int l_port;
+		private volatile boolean listen;
 		public Listener(String t, int i) {
 			this.type = t;
 			this.l_socket = null;
@@ -699,7 +699,7 @@ public class Node implements Runnable{
 			}
 		}
 			
-		private class Timer implements Runnable{
+		private volatile class Timer implements Runnable{
 			long wait;
 			long start_time;
 			public Timer() {
@@ -730,7 +730,7 @@ public class Node implements Runnable{
 	}
 	
 	//This waits to see if the initial node exists at point of connection
-private class Wait implements Runnable{
+private volatile class Wait implements Runnable{
 	long wait;
 	long start_time;
 	boolean finished;
@@ -762,7 +762,7 @@ private class Wait implements Runnable{
 	}
 
 	//This is the other part of this process
-private class Checker implements Runnable{
+private volatile class Checker implements Runnable{
 	boolean finished;
 	public Checker() {
 			this.finished = false;
@@ -797,7 +797,7 @@ private class Checker implements Runnable{
 	}
 	}
 
-private class Receiver implements Runnable{
+private volatile class Receiver implements Runnable{
 		public Receiver() {
 		}
 		
@@ -830,10 +830,10 @@ private class Receiver implements Runnable{
 			}
 	}
 
-private class Updater implements Runnable{
+private volatile class Updater implements Runnable{
 		//When ever an account is changed the node adds the account number to the accounts queue
-		private DatagramSocket u_socket;
-		private int u_port;
+		private volatile DatagramSocket u_socket;
+		private volatile int u_port;
 		public Updater(){
 			this.u_socket = null;
 			this.u_port = 1;
@@ -897,7 +897,7 @@ private class Updater implements Runnable{
 		
 	}	
 
-private class Ping implements Runnable{
+private volatile class Ping implements Runnable{
 		int p_port;
 		DatagramSocket p_socket;
 		public Ping(String ip) {
@@ -951,7 +951,7 @@ private class Ping implements Runnable{
 		
 	}
 	
-private class NodeUpdater implements Runnable{
+private volatile class NodeUpdater implements Runnable{
 		byte[] data;
 		int p;
 		public NodeUpdater(byte[] data, int p){
@@ -971,7 +971,7 @@ private class NodeUpdater implements Runnable{
 	}
 
 	//This is the thread that updates the node list in the initial node
-private class NodeManager implements Runnable{
+private volatile class NodeManager implements Runnable{
 		int ne_port;
 		String ne_ip;
 		public NodeManager(String p, String i){
@@ -1050,11 +1050,11 @@ private class NodeManager implements Runnable{
 		}
 }	
 
-private class Account {
+private volatile class Account {
 
-	private int account_number;
-	private int money;
-	private int overdraft;
+	private volatile int account_number;
+	private volatile int money;
+	private volatile int overdraft;
 	//The different constructers are useful as account data can exists in a few different forms depending on how it is being processsed
 	public Account(){
 		this.account_number = 0;
