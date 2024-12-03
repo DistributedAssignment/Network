@@ -461,8 +461,10 @@ public class Node implements Runnable{
 				System.out.println("Waiting... ");
 			}
 			if (w.getFinished()){
+				System.out.println("No initial node");
 				t_1.interrupt();
 			} else if (c.getFinished()){
+				System.out.println("Initial node found");
 				t_2.interrupt();
 			}
 			c = null;
