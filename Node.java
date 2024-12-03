@@ -528,7 +528,7 @@ public class Node implements Runnable{
 			int[] times = new int[20];
 			int n = 0;
 			int k = 0;
-			booleanups = false;
+			boolean ups = false;
 			for (int i = 0; i<20; i++) {
 				try {
 				String[] m = (new String(messages.remove())).split(" ");
