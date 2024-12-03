@@ -463,9 +463,8 @@ public class Node implements Runnable{
 			}
 			myWriter.write("\n");
 			for (int j = 1; j<2048; j++) {
-				System.out.println(ip_list[j]);
 			if (ip_list[j]==null){myWriter.write("NULL ");
-			} else {System.out.println(ip_list[j]); myWriter.write(ip_list[j]+" ");}
+			} else {myWriter.write(ip_list[j]+" ");}
 			myWriter.write(" NULL");
 			}
 			myWriter.write("\n");
@@ -498,7 +497,7 @@ public class Node implements Runnable{
 		}
 
 		//FINISH
-	}
+	
 	
 	//This returns the IP that the computer is operating on
 	private static String getLocalAddress() {
