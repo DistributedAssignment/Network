@@ -1,11 +1,13 @@
-package Network;
 
+
+import java.io.FileWriter;
 import java.net.URL;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -78,11 +80,11 @@ public class Node implements Runnable{
 		initialise();
 
 		//Now the node has been created we can now run the manager
-		try {
+		/*try {
 			manager();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 	
 	private void manager() throws Exception {
@@ -341,6 +343,7 @@ public class Node implements Runnable{
 	}
 
 	private void initialise() {
+		System.out.println("1. STARTED");
 		//Deal with ip
 		try {
 			ip = getLocalAddress();
@@ -349,6 +352,7 @@ public class Node implements Runnable{
 			e.printStackTrace();
 		}
 		
+		System.out.println("2. IP");
 		//Create a socket this is done by trying to create one until a port not in use is found
 		boolean found = false;
 		while (!found) {
@@ -360,7 +364,7 @@ public class Node implements Runnable{
 				port += 1;
 			}
 		}
-		
+		System.out.println("3. PORT");
 		//Now the node needs to be connected to the network
 		/*There was a previous network who's data is still in the repository or there is an election being held for a new initial node,
 		 * This node will listen for the initial node to see if it is still there,
@@ -368,52 +372,110 @@ public class Node implements Runnable{
 		 */
 		
 		//Import.exe file is ran to get the up to date data
+				int n=0;
 		try {
-		ProcessBuilder pb = new ProcessBuilder("Import");
-		pb.directory(new File("Import.bat"));
+		ArrayList<String> command = new ArrayList<String>();
+		command.add(System.getProperty("user.dir")+File.separator+"Import.bat");
+		ProcessBuilder pb = new ProcessBuilder(command);
+		pb.directory(new File("I:\\git\\Network"));
 		Process p = pb.start();
-
+		System.out.println("4. IMPORT");
 		//Reads data
-		BufferedReader br = new BufferedReader(new FileReader("file.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("Data.txt"));
 		StringBuilder sb = new StringBuilder();
 		String line = br.readLine();
 
 		while (line != null) {
 		sb.append(line);
 		sb.append(System.lineSeparator());
-		line = br.readLine();
-
+		line = br.readLine();	
+		}
+		String everything = sb.toString();
+		System.out.println("5. READ FILE");	
 		//Processes the data
 		String[] data = everything.split("\n");
 		String[] node_data = data[0].split(" ");
+		String[] port_data = data[1].split(" ");
+		String[] IP_data = data[2].split(" ");
 		initial_port = Integer.parseInt(node_data[0].trim());
 		initial_ip = node_data[1].trim();
 		initial_IP = InetAddress.getByName(initial_ip);
+
+		//Records the node list 
+
+		for (int i=0; i<2024; i++){
+			if (port_data[i].equals("0")){port_list[i] = 0;
+			} else {port_list[i]=Integer.parseInt(port_data[i]);}
+
+			if (IP_data[i].equals("NULL")){IP_list[i]=null;
+			} else {IP_list[i]=InetAddress.getByName(IP_data[i]);}
+			n +=1;
 		}
-		String everything = sb.toString();
 		} catch (Exception e) {
 			e.printStackTrace();
+			
 		}
-
-
-		//Now that we have the data file we can use it to generate initialise the connection
-		//The data also contains the node list but this is dealt with after as we do not know if this is
-
-		/**THE END OF THAT BIT**/
+		System.out.println(n);
+		System.out.println("6. PROCESSED DATA");
+		//Now that we have the data file we can use it to initialise the connection to the nextwork
+		//The data also contains the node list
 		
 		//Now the node listen's too see if this node still exists
 		Listener search = new Listener("Connect",index);
 		boolean exists = false;
+
 		try {
 			search.run();
+			//Communication is made with the initial node
+			String temp_data = "New Node Initial "+Integer.toString(port) +" "+ip+" "+index;
+			byte[] data = temp_data.getBytes();
+			DatagramPacket packet = new DatagramPacket(data, data.length,initial_IP,initial_port);
+			socket.send(packet);
+			packet = null;
 			exists = true;
 		} catch (NumberFormatException e) {
 			exists = false;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
-		//If this is the initial node then you will also need to declare the NodeUpdater and NodeManager
+		System.out.println("7. LISTENED");
+		/*
+		*If the initial node does not exists the first things that needs to be done is the repository needs to be updated
+		*
+		*/
+
 		if (!exists) {
-			
+			try {
+			FileWriter myWriter = new FileWriter("Data.txt");
+			myWriter.write(Integer.toString(port));
+			myWriter.write(" ");
+			myWriter.write(ip);
+			myWriter.write("\n");
+
+			myWriter.write(Integer.toString(port));
+			for (int j = 1; j<2048; j++) {
+			myWriter.write(" 0 ");
+			}
+			myWriter.write("\n");
+
+			myWriter.write(ip);
+			for (int j = 1; j<2048; j++) {
+			myWriter.write(" NULL ");
+			}
+			myWriter.write("\n");
+			myWriter.close();
+
+			System.out.println("8. WRITTEN");
+			ProcessBuilder pb = new ProcessBuilder("Commit");
+			pb.directory(new File("Commit.bat"));
+			Process p = pb.start();
+			} catch (Exception e) {
+			e.printStackTrace();
+			}	
+			System.out.println("9. COMMIT");
+		} else {
+
 		}
 
 	}
@@ -568,8 +630,11 @@ public class Node implements Runnable{
 					//The node then can update its node list as it now has it as part of the network
 					String n = receive.toString();
 					String[] node = n.split(" ");
-					port_list[Integer.parseInt(node[5].trim())] = Integer.parseInt(node[1].trim())
-					IP_list[Integer.parseInt(node[5].trim())] = InetAddress.getByName(node[2].trim());
+					port_list[Integer.parseInt(node[5].trim())] = Integer.parseInt(node[1].trim());
+					try {IP_list[Integer.parseInt(node[5].trim())] = InetAddress.getByName(node[2].trim());
+					} catch (Exception e) {
+						e.printStackTrace();	
+					}
 					break;
 				}
 			}
