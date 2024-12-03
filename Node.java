@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
-public class Node{
+public class Node implements Runnable{
 	private volatile String ip;
 	private volatile InetAddress IP;
 	private volatile int port;
@@ -46,7 +46,9 @@ public class Node{
 	private volatile String name;
 	private volatile int index;
 	private volatile boolean exists;	
+	public void run() {
 
+	}
 	
 	private void manager() throws Exception {
 		//This will be the interface that the client deals with when managing there accounts
@@ -496,26 +498,6 @@ public class Node{
 	
 	//The main method simply creates the node and starts running it
 	public static void main(String args[]) {
-		accounts = new LinkedList<String>();
-		messages = new LinkedList<byte[]>();
-		account_list = new Account[2048];
-		exists = false;
-		ip = null;
-		IP = null;
-		ip_list = new String[2048];
-		port = 1;
-		socket = null;
-		initial_port = 1;
-		socket_s = null;
-		socket_c = null;
-		port_s = 1;
-		initial_ip = null;
-		initial_IP = null;
-		port_list = new int[2048];
-		IP_list = new InetAddress[2048];
-		node_list = null;
-		name = null;
-		index = 0;
 		/**TO DO**/
 		/* TUESDAY
 		* TEST BY GRADUALLY ADDING THE STUFF CREATED START WITH CREATING AN INITIAL NODE AND TEST BY ADDING MORE STRUCTURE
@@ -553,7 +535,7 @@ public class Node{
 		}
 		
 		
-		public void run() {
+		public synchronized void run() {
 			while (true){
 			try {Thread.sleep(500);
 			} catch (Exception e){
