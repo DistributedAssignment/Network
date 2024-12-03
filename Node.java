@@ -446,18 +446,18 @@ public class Node implements Runnable{
 				}
 			}
 			port_list[index] = port; 
-			try { IP_list[index] = InetAddress.getByName(ne_ip);
+			try { IP_list[index] = InetAddress.getByName(ip);
 			} catch (Exception e) {}
 			ip_list[index] = ip;
-			System.out.println(ne_ip);
-			port_list[index] = ne_port;
+			System.out.println(ip);
+			port_list[index] = port;
 
 			//Changes the data file and updates the repository
-				        FileWriter myWriter = new FileWriter("Data.txt");
+			FileWriter myWriter = new FileWriter("Data.txt");
 			myWriter.write(ip);
 			myWriter.write("\n");
 			myWriter.write(Integer.toString(port));
-			IP_list[index] = InetAddress.getByName(ne_ip);
+			IP_list[index] = InetAddress.getByName(ip);
 			for (int j = 1; j<2048; j++) {
 
 				myWriter.write(port_list[j]+" ");
