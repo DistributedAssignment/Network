@@ -748,7 +748,7 @@ public class Node implements Runnable{
 				String n = new String(receive);
 				String[] node = n.split(" ");
 				System.out.println(node[0]);
-				index = Integer.parseInt(node[4].trim());
+				index = Integer.parseInt(node[3].trim());
 				port_list[index] = Integer.parseInt(node[1].trim());
 				try {IP_list[index] = InetAddress.getByName(node[2].trim());
 				} catch (Exception e) {
