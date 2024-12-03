@@ -365,7 +365,8 @@ public class Node implements Runnable{
 		boolean found = false;
 		while (!found) {
 			try {
-				socket_c = new DatagramSocket(port,IP);
+				socket = new DatagramSocket(port,IP);
+				socket_c = new DatagramSocket(port+1,IP);
 				found = true;
 			} catch (Exception e) {
 				found = false;
@@ -516,10 +517,6 @@ public class Node implements Runnable{
 			}	
 			System.out.println("9. COMMIT");
 		} 
-
-
-		try {socket = new DatagramSocket(port,IP);
-		} catch (Exception e){}
 
 		(new Thread (new MessageHandler())).start();
 		(new Thread (new Receiver())).start();
@@ -981,7 +978,8 @@ private class NodeManager implements Runnable{
 			//Send new information to the new node
 			String temp_data = "Initial:New:Node "+Integer.toString(ne_port) +" "+ne_ip+" "+index;
 			byte[] data = temp_data.getBytes();
-			DatagramPacket packet = new DatagramPacket(data, data.length,initial_IP,initial_port);
+			//So that it is sent to the checker socket not the usual socket this is so the checker can be closed when it is finished
+			DatagramPacket packet = new DatagramPacket(data, data.length,IP_list[index] ,ne_port+1);
 			socket_s.send(packet);
 			System.out.println("10. SENT MESSAGE");
 		} catch (Exception e){e.printStackTrace();}
