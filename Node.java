@@ -414,7 +414,7 @@ public class Node implements Runnable{
 			} else {IP_list[i]=InetAddress.getByName(IP_data[i]);}
 
 			if (account_data[i].equals("NULL")){account_list[i]=null;
-			} else {account_list[i] = new Account(account_data[i])}
+			} else {account_list[i] = new Account(account_data[i]);}
 		}
 		} catch (Exception e) {
 			e.printStackTrace();	
