@@ -40,6 +40,7 @@ public class Node implements Runnable{
 	private Account[] account_list;
 	private int[] port_list;
 	private InetAddress[] IP_list;
+	private String[] ip_list;
 	private int[] l_port_list;
 	private String[] node_list;
 	private String name;
@@ -52,6 +53,7 @@ public class Node implements Runnable{
 		this.exists = false;
 		this.ip = null;
 		this.IP = null;
+		this.ip_list = new String[2048];
 		this.port = 1;
 		this.socket = null;
 		this.initial_port = 1;
@@ -424,11 +426,10 @@ public class Node implements Runnable{
 		//Records the node list 
 
 		for (int i=0; i<2024; i++){
-			if (port_data[i].equals("0")){port_list[i] = 0;
-			} else {port_list[i]=Integer.parseInt(port_data[i]);}
+			port_list[i]=Integer.parseInt(port_data[i]);
 
-			if (IP_data[i].equals("NULL")){IP_list[i]=null;
-			} else {IP_list[i]=InetAddress.getByName(IP_data[i]);}
+			if (IP_data[i].equals("NULL")){IP_list[i]=null; ip_list[i]=null;
+			} else {IP_list[i]=InetAddress.getByName(IP_data[i]); ip_list[i]=ip_data[i].trim();}
 
 			if (account_data[i].equals("NULL")){account_list[i]=null;
 			} else {account_list[i] = new Account(account_data[i]);}
@@ -485,6 +486,9 @@ public class Node implements Runnable{
 		*/
 		if (!exists) {
 			try {
+				initial_port = ip;
+				initial_IP = IP;
+				initial_ip = ip;
 			FileWriter myWriter = new FileWriter("Data.txt");
 			myWriter.write(Integer.toString(port));
 			myWriter.write(" ");
@@ -971,18 +975,35 @@ private class NodeManager implements Runnable{
 		System.out.println(index);
 		port_list[index] = ne_port;
 		try {
+			//updates the repository
+			FileWriter myWriter = new FileWriter("Data.txt");
+			myWriter.write(Integer.toString(port));
+			myWriter.write(" ");
+			myWriter.write(ip);
+			myWriter.write("\n");
+			myWriter.write(Integer.toString(port));
 			IP_list[index] = InetAddress.getByName(ne_ip);
-			//Updates the repository
-					for (int i=0; i<2024; i++){
-			if (port_data[i].equals("0")){port_list[i] = 0;
-			} else {port_list[i]=Integer.parseInt(port_data[i]);}
+			for (int j = 1; j<2048; j++) {
+				myWriter.write(" "+port_list[j]);
+			}
+			myWriter.write("\n");
+			for (int j = 1; j<2048; j++) {
+			if (ip_list[i]==null){myWriter.write(" NULL");
+			} else {myWriter.write(" "+ip_list[i]);}
+			myWriter.write(" NULL");
+			}
+			myWriter.write("\n");
+			for (int j = 1; j<2048; j++) {
+			if (account_list[i]==null){myWriter.write(" NULL");
+			} else {myWriter.write(","+account_list[i]);}
+			myWriter.write(",NULL");
+			}
+			myWriter.write("\n");
+			//This is the account list which will be gotten by a new node as well
+			for (int j = 0; j<2048; j++) {
+			myWriter.write("NULL,");
+			
 
-			if (IP_data[i].equals("NULL")){IP_list[i]=null;
-			} else {IP_list[i]=InetAddress.getByName(IP_data[i]);}
-
-			if (account_data[i].equals("NULL")){account_list[i]=null;
-			} else {account_list[i] = new Account(account_data[i]);}
-		}
 			ArrayList<String> command = new ArrayList<String>();
 			command.add(System.getProperty("user.dir")+File.separator+"Commit.bat");
 			ProcessBuilder pb = new ProcessBuilder(command);
