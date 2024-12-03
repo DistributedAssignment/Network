@@ -372,6 +372,8 @@ public class Node implements Runnable{
 			e.printStackTrace();
 		}
 
+		//Now that we have the data file we can use it to generate the node list and initialise the connection
+
 		/**THE END OF THAT BIT**/
 		
 		//Now the node listen's too see if this node still exists
