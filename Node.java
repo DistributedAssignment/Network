@@ -528,6 +528,7 @@ public class Node implements Runnable{
 			int[] times = new int[20];
 			int n = 0;
 			int k = 0;
+			booleanups = false;
 			for (int i = 0; i<20; i++) {
 				try {
 				String[] m = (new String(messages.remove())).split(" ");
@@ -535,6 +536,7 @@ public class Node implements Runnable{
 				if (m[0].equals("Update")) {
 					updates[n] = m;
 					n+=1;
+					ups = true;
 				} else if (m[0].equals("New Node")){
 					nodes[k] = m;
 					n+=1;
@@ -551,7 +553,7 @@ public class Node implements Runnable{
 				}
 			}
 			//So the update management is started
-			(new Thread (new UpdateHandler(updates, times))).start();
+			if (ups){(new Thread (new UpdateHandler(updates, times))).start();}
 			try {
 			int j =0;
 			for (int i = 0; i<nodes.length;i++) {
@@ -586,9 +588,6 @@ public class Node implements Runnable{
 		
 		}
 		}
-			catch (NumberFormatException e) {
-				System.out.println("Updates complete");
-			}
 			catch (Exception e) {
 				e.printStackTrace();
 			}
