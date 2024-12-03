@@ -29,6 +29,7 @@ public class Node implements Runnable{
 	private InetAddress IP;
 	private int port;
 	private DatagramSocket socket_s;
+	private DatagramSocket socket_c;
 	int port_s;
 	private int initial_port;
 	private String initial_ip;
@@ -55,6 +56,7 @@ public class Node implements Runnable{
 		this.socket = null;
 		this.initial_port = 1;
 		this.socket_s = null;
+		this.socket_c = null;
 		this.port_s = 1;
 		this.initial_ip = null;
 		this.initial_IP = null;
@@ -363,7 +365,7 @@ public class Node implements Runnable{
 		boolean found = false;
 		while (!found) {
 			try {
-				socket = new DatagramSocket(port,IP);
+				socket_c = new DatagramSocket(port,IP);
 				found = true;
 			} catch (Exception e) {
 				found = false;
@@ -462,10 +464,12 @@ public class Node implements Runnable{
 			}
 			if (w.getFinished()){
 				System.out.println("No initial node");
+				c.destroy();
 				t_1.interrupt();
 			} else if (c.getFinished()){
 				System.out.println("Initial node found");
 				t_2.interrupt();
+				c.destroy();
 			}
 			c = null;
 			w = null;
@@ -512,6 +516,10 @@ public class Node implements Runnable{
 			}	
 			System.out.println("9. COMMIT");
 		} 
+
+
+		try {socket = new DatagramSocket(port,IP);
+		} catch (Exception e){}
 
 		(new Thread (new MessageHandler())).start();
 		(new Thread (new Receiver())).start();
@@ -746,7 +754,7 @@ public class Node implements Runnable{
 	}
 
 	//This is the other part of this process
-	private class Checker implements Runnable{
+private class Checker implements Runnable{
 	boolean finished;
 	public Checker() {
 			this.finished = false;
@@ -755,7 +763,7 @@ public class Node implements Runnable{
 			try {
 				byte[] receive = new byte[1028];
 				DatagramPacket packet = new DatagramPacket(receive, receive.length);
-				socket.receive(packet);
+				socket_c.receive(packet);
 				System.out.println(new String(receive));
 				String n = new String(receive);
 				String[] node = n.split(" ");
@@ -771,12 +779,17 @@ public class Node implements Runnable{
 				e.printStackTrace();
 			}
 	}
+	public void destroy(){
+		socket_c.close();
+	}
+	
 
-		public boolean getFinished(){
-		return finished;	
+	public boolean getFinished(){
+	return finished;	
 	}
 	}
-	private class Receiver implements Runnable{
+
+private class Receiver implements Runnable{
 		public Receiver() {
 		}
 		
@@ -807,7 +820,7 @@ public class Node implements Runnable{
 			}
 	}
 
-	private class Updater implements Runnable{
+private class Updater implements Runnable{
 		//When ever an account is changed the node adds the account number to the accounts queue
 		private DatagramSocket u_socket;
 		private int u_port;
@@ -874,7 +887,7 @@ public class Node implements Runnable{
 		
 	}	
 
-	private class Ping implements Runnable{
+private class Ping implements Runnable{
 		int p_port;
 		DatagramSocket p_socket;
 		public Ping(String ip) {
@@ -928,7 +941,7 @@ public class Node implements Runnable{
 		
 	}
 	
-	private class NodeUpdater implements Runnable{
+private class NodeUpdater implements Runnable{
 		public NodeUpdater(byte[] data){
 		}
 		
@@ -937,7 +950,7 @@ public class Node implements Runnable{
 		}
 	}
 	//This is the thread that updates the node list in the initial node
-	private class NodeManager implements Runnable{
+private class NodeManager implements Runnable{
 		int ne_port;
 		String ne_ip;
 		public NodeManager(String p, String i){
@@ -976,7 +989,7 @@ public class Node implements Runnable{
 		
 	}
 
-	private class Account {
+private class Account {
 
 	private int account_number;
 	private int money;
