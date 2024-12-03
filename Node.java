@@ -496,12 +496,12 @@ public class Node implements Runnable{
 			myWriter.write("\n");
 			myWriter.write(Integer.toString(port));
 			for (int j = 1; j<2048; j++) {
-			myWriter.write(" 0");
+			myWriter.write("0 ");
 			}
 			myWriter.write("\n");
 			myWriter.write(ip);
 			for (int j = 1; j<2048; j++) {
-			myWriter.write(" NULL");
+			myWriter.write("NULL ");
 			}
 			myWriter.write("\n");
 			//This is the account list which will be gotten by a new node as well
@@ -1009,13 +1009,14 @@ private class NodeManager implements Runnable{
 			}
 			myWriter.write("\n");
 			for (int j = 1; j<2048; j++) {
-			if (ip_list[j]==null){myWriter.write(" NULL");
+				System.out.println(ip_list[j]);
+			if (ip_list[j]==null){myWriter.write("NULL ");
 			} else {System.out.println(ip_list[j]); myWriter.write(" "+ip_list[j]);}
 			myWriter.write(" NULL");
 			}
 			myWriter.write("\n");
 			for (int j = 1; j<2048; j++) {
-			if (account_list[j]==null){myWriter.write(" NULL");
+			if (account_list[j]==null){myWriter.write("NULL ");
 			} else {myWriter.write(","+account_list[j]);}
 			myWriter.write(",NULL");
 			}
