@@ -397,8 +397,9 @@ public class Node implements Runnable{
 		String[] data = everything.split("\n");
 		String[] node_data = data[0].split(" ");
 		//Change later
-		String[] port_data = data[1].split("  ");
-		String[] IP_data = data[2].split("  ");
+		String[] port_data = data[1].split(" ");
+		String[] IP_data = data[2].split(" ");
+		//String[] account_data = data[3].split(",");
 		initial_port = Integer.parseInt(node_data[0].trim());
 		initial_ip = node_data[1].trim();
 		initial_IP = InetAddress.getByName(initial_ip);
@@ -411,6 +412,9 @@ public class Node implements Runnable{
 
 			if (IP_data[i].equals("NULL")){IP_list[i]=null;
 			} else {IP_list[i]=InetAddress.getByName(IP_data[i]);}
+
+			//if (account_data[i].equals("NULL")){account_list[i]=null;
+			//} else {account_list[i] = new Account(account_data[i])}
 		}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -437,9 +441,9 @@ public class Node implements Runnable{
 			Wait w = new Wait();
 			(new Thread (w)).start();
 			while (!(c.getFinished() || w.getFinished())) {
-				Thread.sleep(500);
-				System.out.println("="+!(c.getFinished() || w.getFinished()));
 				//Waits in this while loop for one of the processes to finish
+				Thread.sleep(1000);
+				System.out.println(!(c.getFinished() || w.getFinished()));
 			}
 			c = null;
 			w = null;
@@ -470,6 +474,12 @@ public class Node implements Runnable{
 			myWriter.write(ip);
 			for (int j = 1; j<2048; j++) {
 			myWriter.write(" NULL");
+			}
+			myWriter.write("\n");
+			
+			//This is the account list which will be gotten by a new node as well
+			for (int j = 0; j<2048; j++) {
+			myWriter.write(",NULL");
 			}
 			myWriter.write("\n");
 			myWriter.close();
@@ -679,7 +689,7 @@ public class Node implements Runnable{
 	boolean finished;
 	public Wait() {
 		this.start_time = System.currentTimeMillis();
-		this.wait = 25;
+		this.wait = 5;
 		this.finished = false;
 	}
 	public void run() {			
@@ -693,8 +703,7 @@ public class Node implements Runnable{
 		long time =(end_time - start_time)/1000;
 		if (time >= wait) {
 			exists = false;
-			finished = true;
-			System.out.println(finished);
+			finished = true;		
 			break;
 		}
 	}
@@ -930,6 +939,7 @@ public class Node implements Runnable{
 	private int account_number;
 	private int money;
 	private int overdraft;
+	//The different constructers are useful as account data can exists in a few different forms depending on how it is being processsed
 	public Account(){
 		this.account_number = 0;
 		this.money = 0;
@@ -942,6 +952,23 @@ public class Node implements Runnable{
 		this.overdraft = overdraft;
 	}
 	
+	public Account(String data){
+		String[] a = data.split(" ");
+		if (a.length == 3){
+		this.account_number =Integer.parseInt(a[0].trim());
+		this.money = Integer.parseInt(a[1].trim());
+		this.overdraft = Integer.parseInt(a[2].trim());
+		}
+	}
+
+	public Account(String[] a){
+		if (a.length == 3){
+		this.account_number =Integer.parseInt(a[0].trim());
+		this.money = Integer.parseInt(a[1].trim());
+		this.overdraft = Integer.parseInt(a[2].trim());
+		}
+	}
+
 	public int getNumber() {
 		return account_number;
 	}
