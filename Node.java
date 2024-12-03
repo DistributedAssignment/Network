@@ -486,7 +486,7 @@ public class Node implements Runnable{
 		*/
 		if (!exists) {
 			try {
-				initial_port = Integer.parseInt(ip);
+				initial_port = Integer.toString(port);
 				initial_IP = IP;
 				initial_ip = ip;
 			FileWriter myWriter = new FileWriter("Data.txt");
