@@ -1021,7 +1021,6 @@ private class NodeManager implements Runnable{
 			DatagramPacket packet = new DatagramPacket(data, data.length,IP_list[index] ,ne_port+1);
 			socket_s.send(packet);
 			System.out.println("10. SENT MESSAGE");
-		}
 		} catch (Exception e){e.printStackTrace();}
 	
 		}
