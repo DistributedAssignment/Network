@@ -443,7 +443,7 @@ public class Node implements Runnable{
 			while (!(c.getFinished() || w.getFinished())) {
 				//Waits in this while loop for one of the processes to finish
 				Thread.sleep(1000);
-				System.out.println(!(c.getFinished() || w.getFinished()));
+				System.out.println("Waiting... ");
 			}
 			c = null;
 			w = null;
@@ -479,7 +479,8 @@ public class Node implements Runnable{
 			
 			//This is the account list which will be gotten by a new node as well
 			for (int j = 0; j<2048; j++) {
-			myWriter.write(",NULL");
+			myWriter.write("NULL,");
+			Thread.sleep(500);
 			}
 			myWriter.write("\n");
 			myWriter.close();
