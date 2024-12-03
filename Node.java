@@ -479,7 +479,6 @@ System.out.println("A");
 			//This is the account list which will be gotten by a new node as well
 			for (int j = 0; j<2048; j++) {
 			myWriter.write("NULL,");
-			Thread.sleep(500);
 			}
 			myWriter.write("\n");
 			myWriter.close();
