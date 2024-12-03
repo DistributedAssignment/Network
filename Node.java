@@ -521,7 +521,8 @@ public class Node implements Runnable{
 		(new Thread (new MessageHandler())).start();
 		(new Thread (new Receiver())).start();
 		//The console is cleared
-		Runtime.getRuntime().exec("cls");
+		try {Runtime.getRuntime().exec("cls");
+		}catch (Exception e){}
 	}
 	
 	
@@ -569,7 +570,9 @@ public class Node implements Runnable{
 				try {
 				String[] m = (new String(messages.remove())).split(" ");
 				//Preps the updates and new nodes to be handled separately
-				System.out.println(m); 
+				System.out.println(m[0]); 
+				System.out.println(m[1]); 
+				System.out.println(m[2]); 
 				if (m[0].trim().equals("Update")) {
 					updates[n] = m;
 					n+=1;
@@ -720,7 +723,7 @@ public class Node implements Runnable{
 	}
 	
 	//This waits to see if the initial node exists at point of connection
-	private class Wait implements Runnable{
+private class Wait implements Runnable{
 	long wait;
 	long start_time;
 	boolean finished;
