@@ -28,6 +28,8 @@ public class Node implements Runnable{
 	private String ip;
 	private InetAddress IP;
 	private int port;
+	private DatagramSocket socket_s;
+	int port_s;
 	private int initial_port;
 	private String initial_ip;
 	private Queue<String> accounts;	
@@ -52,6 +54,8 @@ public class Node implements Runnable{
 		this.port = 1;
 		this.socket = null;
 		this.initial_port = 1;
+		this.socket_s = NULL;
+		this.port_s = 1;
 		this.initial_ip = null;
 		this.initial_IP = null;
 		this.port_list = new int[2048];
@@ -364,6 +368,16 @@ public class Node implements Runnable{
 			} catch (Exception e) {
 				found = false;
 				port += 1;
+			}
+		}
+		found = false;
+		while (!found) {
+			try {
+				socket_s = new DatagramSocket(port,IP);
+				found = true;
+			} catch (Exception e) {
+				found = false;
+				port_s += 1;
 			}
 		}
 		System.out.println("3. PORT");
@@ -751,11 +765,7 @@ public class Node implements Runnable{
 	}
 	}
 	private class Receiver implements Runnable{
-		private DatagramSocket socket_r;
-		int port_r;
 		public Receiver() {
-			this.socket_r = null;
-			this.port_r = 1;
 		}
 		
 		public void run() {
