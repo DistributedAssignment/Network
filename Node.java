@@ -994,7 +994,7 @@ private class NodeManager implements Runnable{
 		ip_list[index] = ne_ip;
 		System.out.println(ne_ip);
 		port_list[index] = ne_port;
-		for (int i = 0 ;i<ip_list.length,i++)
+		for (int i = 0 ;i<ip_list.length;i++)
 		{
 			System.out.print(ip_list[i]);
 		}
