@@ -529,6 +529,7 @@ public class Node implements Runnable{
 			int n = 0;
 			int k = 0;
 			boolean ups = false;
+			boolean noes = false;
 			for (int i = 0; i<20; i++) {
 				try {
 				String[] m = (new String(messages.remove())).split(" ");
@@ -540,6 +541,7 @@ public class Node implements Runnable{
 				} else if (m[0].equals("New Node")){
 					nodes[k] = m;
 					n+=1;
+					noes = true;
 				} else if (m[0].equals("Initial Fail")){
 					/***ADD LATER***/
 				}  else if (m[0].equals("Initial New Node")){
@@ -554,17 +556,19 @@ public class Node implements Runnable{
 			}
 			//So the update management is started
 			if (ups){(new Thread (new UpdateHandler(updates, times))).start();}
-			try {
-			int j =0;
-			for (int i = 0; i<nodes.length;i++) {
-					j = Integer.parseInt(nodes[i][4]);
-					port_list[j] = Integer.parseInt(nodes[i][1]);
-					IP_list[j] = InetAddress.getByName(nodes[i][2]);
-					Listener l = new Listener("Node",j);
-					(new Thread(l)).start();
-			}
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
+			if (noes){
+				try {
+				int j =0;
+				for (int i = 0; i<nodes.length;i++) {
+						j = Integer.parseInt(nodes[i][4]);
+						port_list[j] = Integer.parseInt(nodes[i][1]);
+						IP_list[j] = InetAddress.getByName(nodes[i][2]);
+						Listener l = new Listener("Node",j);
+						(new Thread(l)).start();
+				}
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
