@@ -782,6 +782,7 @@ public class Node implements Runnable{
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				System.out.println("Received");
 				messages.add(receive);
 				}	
 			}
