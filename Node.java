@@ -603,6 +603,7 @@ public class Node implements Runnable{
 			//So the update management is started
 			if (ups){(new Thread (new UpdateHandler(updates, times))).start();}
 			if (noes){
+				System.out.println("Updatating node list");
 				try {
 				int j =0;
 				for (int i = 0; i<nodes.length;i++) {
@@ -966,6 +967,7 @@ private class NodeManager implements Runnable{
 		}
 		
 		public void run() {
+		System.out.println("Managing");
 		int index = 0;
 		for (int i=0; i<2024; i++){
 			if (IP_list[i]==null){
@@ -1013,7 +1015,7 @@ private class NodeManager implements Runnable{
 			System.out.println("10. NEW NODE COMMIT");
 
 			//Send new information to the new node
-			String temp_data = "Initial:New:Node "+Integer.toString(ne_port) +" "+ne_ip+" "+index;
+			String temp_data = "New:Node "+Integer.toString(ne_port) +" "+ne_ip+" "+index;
 			byte[] data = temp_data.getBytes();
 			//So that it is sent to the checker socket not the usual socket this is so the checker can be closed when it is finished
 			DatagramPacket packet = new DatagramPacket(data, data.length,IP_list[index] ,ne_port+1);
