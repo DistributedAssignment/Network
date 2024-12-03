@@ -3,6 +3,10 @@ package Network;
 import java.net.URL;
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -368,11 +372,32 @@ public class Node implements Runnable{
 		ProcessBuilder pb = new ProcessBuilder("Import");
 		pb.directory(new File("Import.bat"));
 		Process p = pb.start();
+
+		//Reads data
+		BufferedReader br = new BufferedReader(new FileReader("file.txt"));
+		StringBuilder sb = new StringBuilder();
+		String line = br.readLine();
+
+		while (line != null) {
+		sb.append(line);
+		sb.append(System.lineSeparator());
+		line = br.readLine();
+
+		//Processes the data
+		String[] data = everything.split("\n");
+		String[] node_data = data[0].split(" ");
+		initial_port = Integer.parseInt(node_data[0].trim());
+		initial_ip = node_data[1].trim();
+		initial_IP = InetAddress.getByName(initial_ip);
+		}
+		String everything = sb.toString();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		//Now that we have the data file we can use it to generate the node list and initialise the connection
+
+		//Now that we have the data file we can use it to generate initialise the connection
+		//The data also contains the node list but this is dealt with after as we do not know if this is
 
 		/**THE END OF THAT BIT**/
 		
@@ -512,7 +537,9 @@ public class Node implements Runnable{
 		
 		public void run() {
 			initialise();
-			l_port_list[index] = l_port;
+			if (!(type.equals("Connect"))){
+				l_port_list[index] = l_port;
+			}
 			while(true) {
 				//As this is listening for one node one time it just starts the times and waits
 				byte[] receive = new byte[1028];
@@ -521,7 +548,12 @@ public class Node implements Runnable{
 				try {
 					DatagramPacket packet = new DatagramPacket(receive, receive.length);
 					
-					l_socket.receive(packet);
+					//If it is waiting for a connection the node socket is used as it is more convient
+					if (!(type.equals("Connect"))){
+						l_socket.receive(packet);
+					} else {
+						socket.receive(packet);
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -531,8 +563,14 @@ public class Node implements Runnable{
 				
 				//As in this case you are waiting for a connection only once
 				if (type.equals("Connect")) {
+					//The node list received by the node does not contain itself to confirm the initial node still exists the message sent to the node is the update to the node list
+					//sent to every node in the network
+					//The node then can update its node list as it now has it as part of the network
+					String n = receive.toString();
+					String[] node = n.split(" ");
+					port_list[Integer.parseInt(node[5].trim())] = Integer.parseInt(node[1].trim())
+					IP_list[Integer.parseInt(node[5].trim())] = InetAddress.getByName(node[2].trim());
 					break;
-					//So the initial node has been found to exists and run() can terminate and no exception is thrown
 				}
 			}
 
