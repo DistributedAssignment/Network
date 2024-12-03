@@ -410,12 +410,11 @@ public class Node implements Runnable{
 			if (port_data[i].equals("0")){port_list[i] = 0;
 			} else {port_list[i]=Integer.parseInt(port_data[i]);}
 
-			System.out.println(IP_data[i]);
 			if (IP_data[i].equals("NULL")){IP_list[i]=null;
 			} else {IP_list[i]=InetAddress.getByName(IP_data[i]);}
 
-			//if (account_data[i].equals("NULL")){account_list[i]=null;
-			//} else {account_list[i] = new Account(account_data[i])}
+			if (account_data[i].equals("NULL")){account_list[i]=null;
+			} else {account_list[i] = new Account(account_data[i])}
 		}
 		} catch (Exception e) {
 			e.printStackTrace();	
@@ -456,7 +455,7 @@ public class Node implements Runnable{
 		*If the initial node does not exists the first things that needs to be done is the repository needs to be updated
 		*
 		*/
-
+		System.out.print(exists);
 		if (!exists) {
 			try {
 			FileWriter myWriter = new FileWriter("Data.txt");
