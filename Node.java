@@ -12,14 +12,12 @@ import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Base64;
+import java.lang.ProcessBuilder;
+import java.io.File;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
-/*
- * DO NOT FORGET STUFF ABOUT THE CLOCK SO THAT TASKS ARE DONE IN ORDER
- * 
- */
 public class Node implements Runnable{
 	private String ip;
 	private InetAddress IP;
@@ -58,7 +56,6 @@ public class Node implements Runnable{
 	public void run() {
 		/**TO DO**/
 		/* TUESDAY
-		 * SET UP GITHUB
 		 * FINISH 3
 		 * FINISH 1
 		 * TEST BY GRADUALLY ADDING THE STUFF CREATED START WITH CREATING AN INITIAL NODE AND TEST BY ADDING MORE STRUCTURE
@@ -366,9 +363,15 @@ public class Node implements Runnable{
 		 * If an election is being held this will be stated in the data and then the node will wait for the election to be finished to join the network
 		 */
 		
-		/***HERE GIT REPOSITORY IS BEING ACCESSED**/
-		
-		
+		//Import.exe file is ran to get the up to date data
+		try {
+		ProcessBuilder pb = new ProcessBuilder("Import");
+		pb.directory(new File("Import.bat"));
+		Process p = pb.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		/**THE END OF THAT BIT**/
 		
 		//Now the node listen's too see if this node still exists
@@ -765,6 +768,80 @@ public class Node implements Runnable{
 		public void run() {
 			
 		}
+	}
+
+	private class Account {
+
+	private int account_number;
+	private int money;
+	private int overdraft;
+	public Account(){
+		this.account_number = 0;
+		this.money = 0;
+		this.overdraft = 0;
+	}
+	
+	public Account(int account_number, int money, int overdraft){
+		this.account_number = account_number;
+		this.money = money;
+		this.overdraft = overdraft;
+	}
+	
+	public int getNumber() {
+		return account_number;
+	}
+	
+	public int getMoney() {
+		return money;
+	}
+
+	public int getOverdraft() {
+		return overdraft;
+	}
+	
+	//These are the three methods required to edit an account locally within a node
+	public int withdraw(int withdrawl) {
+	if (withdrawl>=0) {
+		if (money-withdrawl < 0) {
+			if (-1*(money-withdrawl) < overdraft) {
+				money = money-withdrawl;
+				return money;
+			} else {
+				return -1;
+			}
+		} else {
+			money = money-withdrawl;
+			return money;				
+		}
+	} else {
+		return -2;
+	}
+	}
+	
+	public int deposit(int deposit) {
+	if (deposit>=0) {
+		money += deposit;
+		return money;
+	} else {
+		return -1;
+	}
+	}
+	
+	public void close() {
+		account_number = -1000;			
+	}
+
+	//Data for an account can be retrieved in the form of a byte[] array or String
+	public byte[] getDataFormat() {
+		String a = Integer.toString(account_number) + " "  +Integer.toString(money) + " "  +Integer.toString(overdraft);
+		byte[] b = a.getBytes();
+		return b;
+	}
+	
+	public String getStringFormat() {
+		String a = Integer.toString(account_number) + " "  +Integer.toString(money) + " "  +Integer.toString(overdraft);
+		return a;
+	}	
 	}
 }
 	
