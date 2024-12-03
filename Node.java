@@ -542,6 +542,7 @@ public class Node implements Runnable{
 			} catch (Exception e){
 				e.printStackTrace();
 			}
+			System.out.println("Reading");
 			String[][] updates = new String[20][5];
 			String[][] nodes = new String[20][5];
 			int[] times = new int[20];
@@ -564,6 +565,7 @@ public class Node implements Runnable{
 				} else if (m[0].equals("Initial:Fail")){
 					/***ADD LATER***/
 				}  else if (m[0].equals("Initial:New:Node")){
+					System.out.println("New Node Connecting");
 					(new Thread (new NodeManager(m[1].trim(),m[2].trim()))).start();
 				} else if (m[0].equals("New:Account")){
 					/***ADD LATER***/
@@ -747,7 +749,6 @@ public class Node implements Runnable{
 				System.out.println(new String(receive));
 				String n = new String(receive);
 				String[] node = n.split(" ");
-				System.out.println(node[0]);
 				index = Integer.parseInt(node[3].trim());
 				port_list[index] = Integer.parseInt(node[1].trim());
 				try {IP_list[index] = InetAddress.getByName(node[2].trim());
