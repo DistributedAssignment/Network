@@ -442,7 +442,8 @@ public class Node implements Runnable{
 		try {
 			//Create the waiter so that it can be ready to catch the response
 			Checker c = new Checker();
-			(new Thread (c)).start();
+			Thread t_1 = (new Thread (c));
+			t_1.start();
 			//Communication is made with the initial node
 			String temp_data = "Initial:New:Node "+Integer.toString(port) +" "+ip+" "+index;
 			byte[] data = temp_data.getBytes();
@@ -452,11 +453,17 @@ public class Node implements Runnable{
 
 			//Waiter is started
 			Wait w = new Wait();
-			(new Thread (w)).start();
+			Thread t_2 = (new Thread (w));
+			t_2.start();
 			while (!(c.getFinished() || w.getFinished())) {
 				//Waits in this while loop for one of the processes to finish
 				Thread.sleep(1000);
 				System.out.println("Waiting... ");
+			}
+			if (w.getFinished()){
+				t_1.interrupt();
+			} else if (c.getFinished()){
+				t_2.interrupt();
 			}
 			c = null;
 			w = null;
