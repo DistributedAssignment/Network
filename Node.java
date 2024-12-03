@@ -41,10 +41,12 @@ public class Node implements Runnable{
 	private String[] node_list;
 	private String name;
 	private int index;
+	private boolean exists;
 	public Node() {
 		this.accounts = new LinkedList<String>();
 		this.messages = new LinkedList<byte[]>();
 		this.account_list = new Account[2048];
+		this.exists = false;
 		this.ip = null;
 		this.IP = null;
 		this.port = 1;
@@ -52,8 +54,8 @@ public class Node implements Runnable{
 		this.initial_port = 1;
 		this.initial_ip = null;
 		this.initial_IP = null;
-		this.port_list = null;
-		this.IP_list = null;
+		this.port_list = new int[2048];
+		this.IP_list = new InetAddress[2048];
 		this.node_list = null;
 		this.name = null;
 		this.index = 0;
@@ -372,7 +374,6 @@ public class Node implements Runnable{
 		 */
 		
 		//Import.exe file is ran to get the up to date data
-				int n=0;
 		try {
 		ArrayList<String> command = new ArrayList<String>();
 		command.add(System.getProperty("user.dir")+File.separator+"Import.bat");
@@ -395,8 +396,9 @@ public class Node implements Runnable{
 		//Processes the data
 		String[] data = everything.split("\n");
 		String[] node_data = data[0].split(" ");
-		String[] port_data = data[1].split(" ");
-		String[] IP_data = data[2].split(" ");
+		//Change later
+		String[] port_data = data[1].split("  ");
+		String[] IP_data = data[2].split("  ");
 		initial_port = Integer.parseInt(node_data[0].trim());
 		initial_ip = node_data[1].trim();
 		initial_IP = InetAddress.getByName(initial_ip);
@@ -409,33 +411,37 @@ public class Node implements Runnable{
 
 			if (IP_data[i].equals("NULL")){IP_list[i]=null;
 			} else {IP_list[i]=InetAddress.getByName(IP_data[i]);}
-			n +=1;
 		}
 		} catch (Exception e) {
 			e.printStackTrace();
 			
 		}
-		System.out.println(n);
 		System.out.println("6. PROCESSED DATA");
 		//Now that we have the data file we can use it to initialise the connection to the nextwork
 		//The data also contains the node list
 		
 		//Now the node listen's too see if this node still exists
 		Listener search = new Listener("Connect",index);
-		boolean exists = false;
-
 		try {
-			search.run();
+			//Create the waiter so that it can be ready to catch the response
+			Checker c = new Checker();
+			(new Thread (c)).start();
 			//Communication is made with the initial node
 			String temp_data = "New Node Initial "+Integer.toString(port) +" "+ip+" "+index;
 			byte[] data = temp_data.getBytes();
 			DatagramPacket packet = new DatagramPacket(data, data.length,initial_IP,initial_port);
 			socket.send(packet);
 			packet = null;
-			exists = true;
-		} catch (NumberFormatException e) {
-			exists = false;
-		} catch (Exception e) {
+
+			//Waiter is started
+			Wait w = new Wait();
+			(new Thread (w)).start();
+			while (!(c.getFinished() || w.getFinished())) {
+				//Waits in this while loop for one of the processes to finish
+			}
+			c = null;
+			w = null;
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -455,20 +461,22 @@ public class Node implements Runnable{
 
 			myWriter.write(Integer.toString(port));
 			for (int j = 1; j<2048; j++) {
-			myWriter.write(" 0 ");
+			myWriter.write(" 0");
 			}
 			myWriter.write("\n");
 
 			myWriter.write(ip);
 			for (int j = 1; j<2048; j++) {
-			myWriter.write(" NULL ");
+			myWriter.write(" NULL");
 			}
 			myWriter.write("\n");
 			myWriter.close();
 
 			System.out.println("8. WRITTEN");
-			ProcessBuilder pb = new ProcessBuilder("Commit");
-			pb.directory(new File("Commit.bat"));
+			ArrayList<String> command = new ArrayList<String>();
+			command.add(System.getProperty("user.dir")+File.separator+"Commit.bat");
+			ProcessBuilder pb = new ProcessBuilder(command);
+			pb.directory(new File("I:\\git\\Network"));
 			Process p = pb.start();
 			} catch (Exception e) {
 			e.printStackTrace();
@@ -585,12 +593,14 @@ public class Node implements Runnable{
 		private DatagramSocket l_socket;
 		private Thread t;
 		private int l_port;
+		private boolean listen;
 		public Listener(String t, int i) {
 			this.type = t;
 			this.l_socket = null;
 			this.l_port = 1;
 			this.t = null;
 			this.index = i;
+			this.listen = true;
 		}
 		
 		public void destroy() throws Exception {
@@ -599,46 +609,21 @@ public class Node implements Runnable{
 		
 		public void run() {
 			initialise();
-			if (!(type.equals("Connect"))){
-				l_port_list[index] = l_port;
-			}
-			while(true) {
+			l_port_list[index] = l_port;
+			while(listen) {
 				//As this is listening for one node one time it just starts the times and waits
 				byte[] receive = new byte[1028];
 				t = (new Thread (new Timer()));
 				t.start();
 				try {
 					DatagramPacket packet = new DatagramPacket(receive, receive.length);
-					
-					//If it is waiting for a connection the node socket is used as it is more convient
-					if (!(type.equals("Connect"))){
-						l_socket.receive(packet);
-					} else {
-						socket.receive(packet);
-					}
+					l_socket.receive(packet);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				//If a package is received the timer is stopped and the run() method terminates
 				t.interrupt();
-
-				
-				//As in this case you are waiting for a connection only once
-				if (type.equals("Connect")) {
-					//The node list received by the node does not contain itself to confirm the initial node still exists the message sent to the node is the update to the node list
-					//sent to every node in the network
-					//The node then can update its node list as it now has it as part of the network
-					String n = receive.toString();
-					String[] node = n.split(" ");
-					port_list[Integer.parseInt(node[5].trim())] = Integer.parseInt(node[1].trim());
-					try {IP_list[Integer.parseInt(node[5].trim())] = InetAddress.getByName(node[2].trim());
-					} catch (Exception e) {
-						e.printStackTrace();	
-					}
-					break;
-				}
 			}
-
 		}
 		
 		private void initialise() {
@@ -656,11 +641,13 @@ public class Node implements Runnable{
 		}
 			
 		private class Timer implements Runnable{
+			long wait;
 			long start_time;
 			public Timer() {
 				this.start_time = System.currentTimeMillis();
+				this.wait = 25;
 			}
-			public void run(){			
+			public void run() {			
 			while(true) {
 				try {
 					Thread.sleep(500);
@@ -669,13 +656,11 @@ public class Node implements Runnable{
 				}
 				long end_time = System.currentTimeMillis();
 				long time =(end_time - start_time)/1000;
-				if (time >= 25.0) {
+				System.out.println(time);
+				if (time >= wait) {
 					//Begins the process of removing the node from the list
-					//Unless it is of type Initial or Connection
-					if (type.equals("Connect")) {
-						//This will throw an exception back to the initialise method
-						Integer.parseInt("NOT FOUND");
-					} else if (type.equals("Initial")) {
+					//Unless it is of type Initial
+					if (type.equals("Initial")) {
 						//Process for creating new initial node
 					} else {
 						//Process of removing node from list
@@ -686,6 +671,70 @@ public class Node implements Runnable{
 		}
 	}
 	
+	//This waits to see if the initial node exists at point of connection
+	private class Wait implements Runnable{
+	long wait;
+	long start_time;
+	boolean finished;
+	public Wait() {
+		this.start_time = System.currentTimeMillis();
+		this.wait = 25;
+		this.finished = false;
+	}
+	public void run() {			
+	while(true) {
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		long end_time = System.currentTimeMillis();
+		long time =(end_time - start_time)/1000;
+		System.out.println(time);
+		if (time >= wait) {
+			exists = false;
+			finished = true;
+			break;
+		}
+	}
+	}
+
+	public boolean getFinished(){
+		return finished;
+	}
+	}
+
+	//This is the other part of this process
+	private class Checker implements Runnable{
+	boolean finished;
+	public Checker() {
+			this.finished = false;
+	}
+	public void run() {			
+			try {
+				byte[] receive = new byte[1028];
+				DatagramPacket packet = new DatagramPacket(receive, receive.length);
+				socket.receive(packet);
+
+				String n = receive.toString();
+				String[] node = n.split(" ");
+				port_list[Integer.parseInt(node[5].trim())] = Integer.parseInt(node[1].trim());
+				try {IP_list[Integer.parseInt(node[5].trim())] = InetAddress.getByName(node[2].trim());
+				} catch (Exception e) {
+					e.printStackTrace();	
+				}
+				exists = true;
+				finished = true;
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	}
+	
+		public boolean getFinished(){
+		return finished;	
+	}
+
 	private class Receiver implements Runnable{
 		private DatagramSocket socket_r;
 		int r_port;
@@ -949,7 +998,7 @@ public class Node implements Runnable{
 	}	
 	}
 }
-	
+}
 	
 
 
