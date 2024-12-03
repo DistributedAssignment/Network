@@ -417,8 +417,7 @@ public class Node implements Runnable{
 			//} else {account_list[i] = new Account(account_data[i])}
 		}
 		} catch (Exception e) {
-			e.printStackTrace();
-			
+			e.printStackTrace();	
 		}
 		System.out.println("6. PROCESSED DATA");
 		//Now that we have the data file we can use it to initialise the connection to the nextwork
@@ -726,7 +725,7 @@ public class Node implements Runnable{
 				byte[] receive = new byte[1028];
 				DatagramPacket packet = new DatagramPacket(receive, receive.length);
 				socket.receive(packet);
-
+				System.out.println(new String(receive));
 				String n = receive.toString();
 				String[] node = n.split(" ");
 				port_list[Integer.parseInt(node[5].trim())] = Integer.parseInt(node[1].trim());
