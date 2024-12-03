@@ -45,9 +45,56 @@ public class Node implements Runnable{
 	private volatile String[] node_list;
 	private volatile String name;
 	private volatile int index;
-	private volatile boolean exists;	
-	public void run() {
+	private volatile boolean exists;
+	public Node() {
+		this.accounts = new LinkedList<String>();
+		this.messages = new LinkedList<byte[]>();
+		this.account_list = new Account[2048];
+		this.exists = false;
+		this.ip = null;
+		this.IP = null;
+		this.ip_list = new String[2048];
+		this.port = 1;
+		this.socket = null;
+		this.initial_port = 1;
+		this.socket_s = null;
+		this.socket_c = null;
+		this.port_s = 1;
+		this.initial_ip = null;
+		this.initial_IP = null;
+		this.port_list = new int[2048];
+		this.IP_list = new InetAddress[2048];
+		this.node_list = null;
+		this.name = null;
+		this.index = 0;
+	}
+	
+	public synchronized void run() {
+		/**TO DO**/
+		/* TUESDAY
+		* TEST BY GRADUALLY ADDING THE STUFF CREATED START WITH CREATING AN INITIAL NODE AND TEST BY ADDING MORE STRUCTURE
+		 * FINISH 3
+		 * FINISH 1
+		 * 
+		 * WENSDAY
+		 * FINISH 4
+		 * REFER TO ASSIGNMENT SHEET AND CHECK OF STUFF
+		 * 
+		 * THURSDAY
+		 * ADD ANY ADDITIONAL STUFF
+		 * TEST
+		 * WRITE REPORT 
+		 * 
+		 */
+		//This sets the node up for being apart of a network
+		initialise();
 
+		//Now the node has been created we can now run the manager
+		/*try {
+			manager();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}*/
 	}
 	
 	private void manager() throws Exception {
@@ -498,31 +545,8 @@ public class Node implements Runnable{
 	
 	//The main method simply creates the node and starts running it
 	public static void main(String args[]) {
-		/**TO DO**/
-		/* TUESDAY
-		* TEST BY GRADUALLY ADDING THE STUFF CREATED START WITH CREATING AN INITIAL NODE AND TEST BY ADDING MORE STRUCTURE
-		 * FINISH 3
-		 * FINISH 1
-		 * 
-		 * WENSDAY
-		 * FINISH 4
-		 * REFER TO ASSIGNMENT SHEET AND CHECK OF STUFF
-		 * 
-		 * THURSDAY
-		 * ADD ANY ADDITIONAL STUFF
-		 * TEST
-		 * WRITE REPORT 
-		 * 
-		 */
-		//This sets the node up for being apart of a network
-		initialise();
-
-		//Now the node has been created we can now run the manager
-		/*try {
-			manager();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
+		Node node = new Node();
+		node.run();
 	}
 	
 	/**Below are the classes which will be used by the network**/
@@ -535,7 +559,7 @@ public class Node implements Runnable{
 		}
 		
 		
-		public synchronized void run() {
+		public void run() {
 			while (true){
 			try {Thread.sleep(500);
 			} catch (Exception e){
