@@ -524,7 +524,10 @@ public class Node implements Runnable{
 		
 		public void run() {
 			while (true){
-			thread.sleep(500);
+			try {Thread.sleep(500);
+			} catch (Exception e){
+				e.printStackTrace();
+			}
 			String[][] updates = new String[20][5];
 			String[][] nodes = new String[20][5];
 			int[] times = new int[20];
