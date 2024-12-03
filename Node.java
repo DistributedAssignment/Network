@@ -429,7 +429,7 @@ public class Node implements Runnable{
 			port_list[i]=Integer.parseInt(port_data[i]);
 
 			if (IP_data[i].equals("NULL")){IP_list[i]=null; ip_list[i]=null;
-			} else {IP_list[i]=InetAddress.getByName(IP_data[i]); ip_list[i]=ip_data[i].trim();}
+			} else {IP_list[i]=InetAddress.getByName(IP_data[i]); ip_list[i]=IP_data[i].trim();}
 
 			if (account_data[i].equals("NULL")){account_list[i]=null;
 			} else {account_list[i] = new Account(account_data[i]);}
@@ -486,7 +486,7 @@ public class Node implements Runnable{
 		*/
 		if (!exists) {
 			try {
-				initial_port = ip;
+				initial_port = Integer.parseInt(ip);
 				initial_IP = IP;
 				initial_ip = ip;
 			FileWriter myWriter = new FileWriter("Data.txt");
@@ -988,14 +988,14 @@ private class NodeManager implements Runnable{
 			}
 			myWriter.write("\n");
 			for (int j = 1; j<2048; j++) {
-			if (ip_list[i]==null){myWriter.write(" NULL");
-			} else {myWriter.write(" "+ip_list[i]);}
+			if (ip_list[j]==null){myWriter.write(" NULL");
+			} else {myWriter.write(" "+ip_list[j]);}
 			myWriter.write(" NULL");
 			}
 			myWriter.write("\n");
 			for (int j = 1; j<2048; j++) {
-			if (account_list[i]==null){myWriter.write(" NULL");
-			} else {myWriter.write(","+account_list[i]);}
+			if (account_list[j]==null){myWriter.write(" NULL");
+			} else {myWriter.write(","+account_list[j]);}
 			myWriter.write(",NULL");
 			}
 			myWriter.write("\n");
