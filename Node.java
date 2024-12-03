@@ -54,7 +54,7 @@ public class Node implements Runnable{
 		this.port = 1;
 		this.socket = null;
 		this.initial_port = 1;
-		this.socket_s = NULL;
+		this.socket_s = null;
 		this.port_s = 1;
 		this.initial_ip = null;
 		this.initial_IP = null;
@@ -373,7 +373,7 @@ public class Node implements Runnable{
 		found = false;
 		while (!found) {
 			try {
-				socket_s = new DatagramSocket(port,IP);
+				socket_s = new DatagramSocket(port_s,IP);
 				found = true;
 			} catch (Exception e) {
 				found = false;
@@ -447,7 +447,7 @@ public class Node implements Runnable{
 			String temp_data = "Initial New Node "+Integer.toString(port) +" "+ip+" "+index;
 			byte[] data = temp_data.getBytes();
 			DatagramPacket packet = new DatagramPacket(data, data.length,initial_IP,initial_port);
-			socket.send(packet);
+			socket_s.send(packet);
 			packet = null;
 
 			//Waiter is started
@@ -769,14 +769,13 @@ public class Node implements Runnable{
 		}
 		
 		public void run() {
-			initialise();
 			byte[] receive;
 			while (true) {
 				receive = new byte[1028];
 				//Waits to receive a connection request from a client
 				DatagramPacket packet = new DatagramPacket(receive, receive.length);
 				try {
-					socket_r.receive(packet);
+					socket.receive(packet);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -787,23 +786,9 @@ public class Node implements Runnable{
 		public byte[] getMessage() {
 			return messages.remove();
 		}
-		
-		private int initialise() {
-		    boolean setup= false;
-			while (setup == false) {
-	    	try {
-	    		setup = true;
-	    		socket_r = new DatagramSocket(port_r,IP);
-			} catch (SocketException e) {
-				setup = false;
-				port_r +=1;
-			}
-			}
-			return port_r;
-		}
-		
+
 		public void destroy(){
-			socket_r.close();
+			socket.close();
 			messages = null;
 			port = 0;
 			}
@@ -911,7 +896,7 @@ public class Node implements Runnable{
 						DatagramPacket packet;
 						try {
 							packet = new DatagramPacket(data, (data).length,IP_list[i], l_port_list[i]);
-							socket.send(packet);
+							socket_s.send(packet);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -971,7 +956,7 @@ public class Node implements Runnable{
 			String temp_data = "Initial New Node "+Integer.toString(ne_port) +" "+ne_ip+" "+index;
 			byte[] data = temp_data.getBytes();
 			DatagramPacket packet = new DatagramPacket(data, data.length,initial_IP,initial_port);
-			socket.send(packet);
+			socket_s.send(packet);
 			System.out.println("10. SENT MESSAGE");
 		} catch (Exception e){e.printStackTrace();}
 		}	
