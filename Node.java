@@ -399,7 +399,7 @@ public class Node implements Runnable{
 		//Change later
 		String[] port_data = data[1].split(" ");
 		String[] IP_data = data[2].split(" ");
-		//String[] account_data = data[3].split(",");
+		String[] account_data = data[3].split(",");
 		initial_port = Integer.parseInt(node_data[0].trim());
 		initial_ip = node_data[1].trim();
 		initial_IP = InetAddress.getByName(initial_ip);
