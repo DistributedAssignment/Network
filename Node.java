@@ -453,7 +453,7 @@ public class Node implements Runnable{
 			port_list[index] = port;
 
 			//Changes the data file and updates the repository
-			FileWriter myWriter = new FileWriter("Data.txt");
+			try{FileWriter myWriter = new FileWriter("Data.txt");
 			myWriter.write(ip);
 			myWriter.write("\n");
 			myWriter.write(Integer.toString(port));
@@ -486,7 +486,9 @@ public class Node implements Runnable{
 			pb.directory(new File("I:\\git\\Network"));
 			Process p = pb.start();
 			System.out.println("10. NEW NODE COMMIT");
+			} catch (Exception e){
 
+			}
 			//Notifys all of the changes
 			String temp = "New Node "+port+" "+ip;
 			byte[] data = temp.getBytes();
