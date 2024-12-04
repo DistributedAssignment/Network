@@ -463,13 +463,11 @@ public class Node implements Runnable{
 			for (int j = 1; j<2048; j++) {
 			if (ip_list[j]==null){myWriter.write("NULL ");
 			} else {myWriter.write(ip_list[j]+" ");}
-			myWriter.write(" NULL");
 			}
 			myWriter.write("\n");
 			for (int j = 1; j<2048; j++) {
-			if (account_list[j]==null){myWriter.write("NULL ");
+			if (account_list[j]==null){myWriter.write("NULL,");
 			} else {myWriter.write(account_list[j]+",");}
-			myWriter.write(",NULL");
 			}
 			myWriter.write("\n");
 			//This is the account list which will be gotten by a new node as well
